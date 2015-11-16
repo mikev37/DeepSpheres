@@ -16,18 +16,60 @@ from pdfminer.pdfdevice import PDFDevice
 from pdfminer.layout import LAParams
 from pdfminer.converter import PDFPageAggregator
 from ccm.Pages import Page
-
- 
-   
+from libxml2 import lineNumbersDefault
 
 
-def GetScript(self, filename):
+
+  
+def GetDatabase():
+    dbPassword = "into0myheart"
+    dbUser = "karl"
+    dbHost = "localhost"
+    dbName = "Plays"
+    db=_mysql.connect(host=dbHost,user=dbUser,
+                  passwd=dbPassword,db=dbName)
+    if not db:
+        print "didn't connect"
+          
+lineNum = 0   #initialize to 1 plus largest line_id in database
+sceneNum = 0   #initialize to 1 plus largest scene_id in database
+characterNum = 0   #set during parse, but can add new characters on the fly, using char_id
+isLine = False
+
+
+def ParseLine(text, indent):
+    global lineNum
+    global sceneNum
+    global characterNum
+    global isLine
+    
+    
+    #Scene start
+    if (indent>100 and indent<120):
+        firstBit = text[:5]
+        if (firstBit.isupper()):
+            #is a new scene, add to database
+            sceneNum+=1
+            print "Scene " + text
+        
+    #Character name
+    elif (text.isupper() and indent>200 and indent<300):
+        #is a Character name, check if it's in the database with appropriate script & get new char_id
+        lineNum+=1
+        print "Character: " + text
+        isLine=True
+        characterNum = 3 #needs a call to database to find char_id
+    
+    #Actual line, always immediately after a character name
+    elif (isLine):
+        isLine = False
+        #add line to database with char_id = characterNum, line num and scene num each 
+        print "Line: " + text
+        
+    return
+
+def GetScript(filename):
     password = ""
-    filename = "sources/Analyze_That.pdf"
-
-def GetScript(self, filename):
-    password = ""
-    filename = "sources/Analyze_That.pdf"
     # Open a PDF file.
     fp = open(filename, 'rb')
     # Create a PDF parser object associated with the file object.
@@ -60,8 +102,12 @@ def GetScript(self, filename):
         layout = device.get_result()
         for page in layout:
             try:
-                print page.x0
-                print page.get_text()
+                ParseLine(page.get_text(), page.x0)
             except:
                 temp=5
     return
+
+
+#GetDatabase()
+#GetScript("sources/Analyze_that.pdf")
+GetScript("sources/TMNT.pdf")

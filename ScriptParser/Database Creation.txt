@@ -1,0 +1,31 @@
+CREATE DATABASE Plays;
+
+CREATE TABLE script(
+script_id int PRIMARY KEY,
+script_name varchar(30) NOT NULL,
+author varchar(20),
+year int,
+genre varchar(20));
+
+CREATE TABLE scene(
+scene_id int PRIMARY KEY,
+pos_in_script int NOT NULL,
+name varchar(20) NOT NULL,
+script_id int,
+FOREIGN KEY (script_id) REFERENCES script(script_id);
+
+CREATE TABLE char(
+char_id int,  
+char_name varchar(20), 
+token varchar(20), 
+scene_id int 
+);
+
+ FOREIGN KEY);
+
+CREATE TABLE line(
+line_id int PRIMARY KEY,
+text varchar(1000),
+scene_id int FOREIGN KEY,
+character_id int FOREIGN KEY);
+
