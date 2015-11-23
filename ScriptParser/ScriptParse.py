@@ -15,6 +15,7 @@ from pdfminer.pdfinterp import PDFPageInterpreter
 from pdfminer.pdfdevice import PDFDevice
 from pdfminer.layout import LAParams
 from pdfminer.converter import PDFPageAggregator
+import time
 #from ccm.Pages import Page
 #from libxml2 import lineNumbersDefault
 
@@ -69,8 +70,8 @@ def percentageUpper(text):
     return 1.0*len(s)/len(text)
 
 def removeParentesis(text):
-    if len(text[text.find(")"):]) > 1 :
-        return (text[0:text.find("(")]+text[text.find(")")+1:]).strip()
+    if len(text[text.rfind(")"):]) > 1 :
+        return (text[0:text.find("(")]+text[text.rfind(")")+1:]).strip()
     else:
         return (text[0:text.find("(")]).strip()
 
@@ -84,13 +85,16 @@ def ParseLine(text, indent):
     global characterNum
     global isLine
 
-
-
+    #kill switch
     if "cid:13" in text:
         return
-
+    if "CONTINUED" in text:
+        return
+    if(len(text.strip())==0):
+        return
     #Scene start
     if (checkScene(text, indent)):
+        print "scnen"
         firstBit = text[:5]
         if (checkSceneHeading(text, indent)):
             #is a new scene, add to database
@@ -171,7 +175,9 @@ def GetScript(filename):
         layout = device.get_result()
         for page in layout:
             try:
-                ParseLine(page.get_text(), page.x0)
+                lines = page.get_text().split("\n \n")
+                for line in lines:
+                    ParseLine(line, page.x0)
             except:
                 temp=5
                 
@@ -199,4 +205,4 @@ def GetScript(filename):
 
 #GetDatabase()
 #GetScript("sources/Analyze_that.pdf")
-GetScript("sources/TMNT.pdf")
+GetScript("sources/LOTR1.pdf")
