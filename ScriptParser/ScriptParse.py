@@ -83,8 +83,12 @@ def ParseLine(text, indent):
     global charTemp
     global characterNum
     global isLine
-    
-    
+
+
+
+    if "cid:13" in text:
+        return
+
     #Scene start
     if (checkScene(text, indent)):
         firstBit = text[:5]
