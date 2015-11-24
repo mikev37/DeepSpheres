@@ -13,9 +13,10 @@ from pdfminer.pdfpage import PDFTextExtractionNotAllowed
 from pdfminer.pdfinterp import PDFResourceManager
 from pdfminer.pdfinterp import PDFPageInterpreter
 from pdfminer.pdfdevice import PDFDevice
-from pdfminer.layout import LAParams
+from pdfminer.layout import LAParams, LTTextBoxHorizontal
 from pdfminer.converter import PDFPageAggregator
 import time
+from collections import namedtuple
 #from ccm.Pages import Page
 #from libxml2 import lineNumbersDefault
 
@@ -69,13 +70,19 @@ def percentageUpper(text):
     s = ''.join([c for c in text if c.isupper()])
     return 1.0*len(s)/len(text)
 
+def percentageNumbers(text):
+    s = ''.join([c for c in text.strip()[0:-2] if c.isdigit()])
+    return 1.0*len(s)/len(text)
+
 def removeParentesis(text):
+    text = text+" "
     if len(text[text.rfind(")"):]) > 1 :
         return (text[0:text.find("(")]+text[text.rfind(")")+1:]).strip()
     else:
         return (text[0:text.find("(")]).strip()
 
 def ParseLine(text, indent):
+    
     global lineNum
     global sceneNum
     global sceneTemp
@@ -88,13 +95,20 @@ def ParseLine(text, indent):
     #kill switch
     if "cid:13" in text:
         return
+    if percentageNumbers(text) > .3:
+        return
     if "CONTINUED" in text:
         return
     if(len(text.strip())==0):
         return
+    
+    print ""
+    print text.strip(),indent
+    print ""
+    
     #Scene start
     if (checkScene(text, indent)):
-        print "scnen"
+        print "scene" + text
         firstBit = text[:5]
         if (checkSceneHeading(text, indent)):
             #is a new scene, add to database
@@ -116,7 +130,7 @@ def ParseLine(text, indent):
         print "\t\tCharacter: " + removeParentesis(text)
 
         charName = removeParentesis(text)
-        if(not sceneTemp[-1].contains(charName)):
+        if(not charName in sceneTemp[-1].chars):
             sceneTemp[-1].chars.append(charName)
 
     
@@ -141,7 +155,13 @@ def ParseLine(text, indent):
         
     return
 
+TextBlock = namedtuple("TextBlock",["x","y","text"])
+
 def GetScript(filename):
+    global sceneNum
+    global sceneTemp
+    sceneNum+=1
+    sceneTemp.append(Scene("START"))
     password = ""
     # Open a PDF file.
     fp = open(filename, 'rb')
@@ -165,23 +185,33 @@ def GetScript(filename):
     
     # Set parameters for analysis.
     laparams = LAParams()
-    laparams.boxes_flow = 1.0
+    laparams.boxes_flow = 2
     # Create a PDF page aggregator object.
     device = PDFPageAggregator(rsrcmgr, laparams=laparams)
     interpreter = PDFPageInterpreter(rsrcmgr, device)
-    for page in PDFPage.create_pages(document):
+    for pgnum,page in enumerate(PDFPage.create_pages(document)):
+        if pgnum == 0:
+            continue
         interpreter.process_page(page)
         # receive the LTPage object for the page.
         layout = device.get_result()
+        text = []
         for page in layout:
             try:
-                lines = page.get_text().split("\n \n")
-                for line in lines:
-                    ParseLine(line, page.x0)
+                if page.get_text().strip():
+                    text.append(TextBlock(page.x0,page.y1,page.get_text().strip()))
+                print text
             except:
-                temp=5
+                temp=5  
+
                 
                 
+                
+                
+        text.sort(key = lambda row:(-row.y))
+                    
+        for line in text:
+            ParseLine(line.text, line.x)
     #print Temporary information
     
     print "\n________________________________________________________________"
@@ -205,4 +235,4 @@ def GetScript(filename):
 
 #GetDatabase()
 #GetScript("sources/Analyze_that.pdf")
-GetScript("sources/LOTR1.pdf")
+GetScript("sources/TMNT.pdf")
