@@ -13,47 +13,82 @@ from pdfminer.pdfpage import PDFTextExtractionNotAllowed
 from pdfminer.pdfinterp import PDFResourceManager
 from pdfminer.pdfinterp import PDFPageInterpreter
 from pdfminer.pdfdevice import PDFDevice
-from pdfminer.layout import LAParams, LTTextBoxHorizontal
+from pdfminer.layout import LAParams
 from pdfminer.converter import PDFPageAggregator
-import time
+import json
+from os import walk, remove
 from collections import namedtuple
 #from ccm.Pages import Page
 #from libxml2 import lineNumbersDefault
 
+sourceLoc = "sources/"
+saveName = 'data.json'
 
-
-  
-def GetDatabase():
-    dbPassword = "into0myheart"
-    dbUser = "karl"
-    dbHost = "localhost"
-    dbName = "Plays"
-    #db=_mysql.connect(host=dbHost,user=dbUser,
-    #              passwd=dbPassword,db=dbName)
-    #if not db:
-    #    print "didn't connect"
-          
+def GetFileList():
+    fileList = []
+    for (dirpath, dirnames, filenames) in walk(sourceLoc):
+        fileList.extend(filenames)
+        break
+    return fileList
+    
+   
+scriptName = ""  #initialize to name of file for each script run     
 lineNum = 0   #initialize to 1 plus largest line_id in database
 sceneNum = 0   #initialize to 1 plus largest scene_id in database
-characterNum = 0   #set during parse, but can add new characters on the fly, using char_id
+characterName = ""   #set during parse, but can add new characters on the fly, using char_id
 isLine = False
 
-charName = "" #Temporary storage of character names
-charTemp = {} #Temporary storage of character lines
-charName = ""
-sceneTemp = [] #Temporary storage of scenes
-class Scene():
-    name = ""
-    phrases = {}
-    chars = []
-    dirs = []
-    tokens = []
-    def __init__ (self,name):
-        self.name = name.strip()
-        self.chars = []
-        self.phrases = {}
-        self.dirs = []
-        self.tokens = []
+def ResetGlobals():
+    global scriptName
+    global lineNum
+    global sceneNum
+    global characterName
+    global isLine   
+    scriptName = "" 
+    lineNum = 0
+    sceneNum = 0
+    characterName = ""
+    isLine = False    
+    return
+    
+
+class LineObj():
+    script = ""
+    scene = 0
+    line = 0
+    character = ""
+    text = ""
+    def __init__ (self, name, sc, ln, ch, txt):
+        self.script = name.strip()
+        self.scene = sc
+        self.line = ln
+        self.character = ch.strip()
+        self.text = txt
+    
+masterList = []   
+
+def LineAdd(script, scene, line, characterName, text): 
+    global lineNum
+    lineNum = lineNum + 1
+    temp = LineObj(script, scene, lineNum, characterName, text)
+    masterList.append(temp)
+    return
+
+def SaveAll():
+    global masterList
+    global saveName
+    for line in masterList:
+        data ={
+               'scriptName'     :   line.script,
+               'sceneNum'       :   line.scene,
+               'lineNum'        :   line.line,
+               'characterName'  :   line.character,
+               'lineText'       :   line.text
+               }
+        with open(saveName, 'a') as openFile:
+            json.dump(data, openFile, indent=3)
+    return
+
 
 #SORTERS
 def checkScene(text, indent):
@@ -80,16 +115,13 @@ def removeParentesis(text):
         return (text[0:text.find("(")]+text[text.rfind(")")+1:]).strip()
     else:
         return (text[0:text.find("(")]).strip()
+    
 
 def ParseLine(text, indent):
-    
+    global scriptName
     global lineNum
     global sceneNum
-    global sceneTemp
-    global sceneName
-    global charName
-    global charTemp
-    global characterNum
+    global characterName
     global isLine
 
     #kill switch
@@ -99,58 +131,35 @@ def ParseLine(text, indent):
         return
     if "CONTINUED" in text:
         return
-    if(len(text.strip())==0):
+    if(len(removeParentesis(text).strip())==0):
         return
-    
-    print ""
-    print text.strip(),indent
-    print ""
+    text = text.replace('\n', '')
     
     #Scene start
     if (checkScene(text, indent)):
-        print "scene" + text
         firstBit = text[:5]
         if (checkSceneHeading(text, indent)):
             #is a new scene, add to database
-            sceneNum+=1
-            sceneTemp.append(Scene(text))
-            print "_________________________________________________"
-            print "Scene " + text
-            print "_________________________________________________"
+            print "\n Scene: " + text
+            sceneNum = sceneNum + 1
         else:
-            sceneTemp[-1].dirs.append(text)
-            print "\tDirection " + text
+            #Otherwise it must be directions
+            lineNum = lineNum + 1
+            LineAdd(scriptName, sceneNum, lineNum, "DIRECTION", removeParentesis(text))
         
     #Character name
     elif (checkCharacter(text, indent)):
         #is a Character name, check if it's in the database with appropriate script & get new char_id
-        lineNum+=1
         isLine=True
-        characterNum = 3 #needs a call to database to find char_id
-        print "\t\tCharacter: " + removeParentesis(text)
-
-        charName = removeParentesis(text)
-        if(not charName in sceneTemp[-1].chars):
-            sceneTemp[-1].chars.append(charName)
+        characterName = removeParentesis(text)
 
     
     #Actual line, always immediately after a character name
     elif (isLine):
         isLine = False
         #add line to database with char_id = characterNum, line num and scene num each 
-        print "\tLine: " + text
-        if(charName in sceneTemp[-1].phrases):
-            sceneTemp[-1].phrases[charName].append(text)
-        else:
-            sceneTemp[-1].phrases[charName] = []
-            sceneTemp[-1].phrases[charName].append(text)
-        if(charName in charTemp):
-            charTemp[charName].append(text)
-        else:
-            charTemp[charName] = []
-            charTemp[charName].append(text)
-        
-        
+        lineNum = lineNum + 1
+        LineAdd(scriptName, sceneNum, lineNum, characterName, removeParentesis(text))
 
         
     return
@@ -158,10 +167,9 @@ def ParseLine(text, indent):
 TextBlock = namedtuple("TextBlock",["x","y","text"])
 
 def GetScript(filename):
-    global sceneNum
-    global sceneTemp
-    sceneNum+=1
-    sceneTemp.append(Scene("START"))
+    global scriptName
+    ResetGlobals()
+    scriptName = filename
     password = ""
     # Open a PDF file.
     fp = open(filename, 'rb')
@@ -172,7 +180,9 @@ def GetScript(filename):
     document = PDFDocument(parser, password)
     # Check if the document allows text extraction. If not, abort.
     if not document.is_extractable:
-        raise PDFTextExtractionNotAllowed
+        print "---Not translatable---"
+        return
+        #raise PDFTextExtractionNotAllowed
     # Create a PDF resource manager object that stores shared resources.
     rsrcmgr = PDFResourceManager()
     # Create a PDF device object.
@@ -200,39 +210,22 @@ def GetScript(filename):
             try:
                 if page.get_text().strip():
                     text.append(TextBlock(page.x0,page.y1,page.get_text().strip()))
-                print text
             except:
                 temp=5  
-
-                
-                
-                
-                
+            print ".",
         text.sort(key = lambda row:(-row.y))
-                    
+        # Parse all of the "line" objects in each page
         for line in text:
             ParseLine(line.text, line.x)
-    #print Temporary information
-    
-    print "\n________________________________________________________________"
-    print "\t\tANALYSIS"
-    print "\n"
-    
-    print "Number of Scenes: "+str(len(sceneTemp))
-    print "Scenes\n"
-    for s in sceneTemp:
-        print s.name
-    
-    print "\nCharacters"
-    for s in charTemp.keys():
-        print s+" "+str(len(charTemp[s]))+" lines"
-    
-    print "\nLines"
-    for s in charTemp.keys():
-        print charTemp[s]
-    return
 
 
-#GetDatabase()
-#GetScript("sources/Analyze_that.pdf")
-GetScript("sources/TMNT.pdf")
+# ---BEGIN PROCEDURAL SEQUENCE---
+
+fileList = GetFileList()
+open(saveName, 'w')  #clear old file for creation of new
+for fileName in fileList:
+    print "\n" + fileName
+    GetScript(sourceLoc + fileName)
+    
+SaveAll()
+    
