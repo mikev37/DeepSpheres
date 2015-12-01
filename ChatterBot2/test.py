@@ -5,13 +5,13 @@ bot1 = ChatBot("Chicken")
 bot2 = ChatBot("Duck")
 bot1.gg()
 bot1 = ChatBot("Chicken")
-#bot1.train("chatterbot.corpus.english")
-#bot2.train("chatterbot.corpus.test")
-bot1.train("chatterbot.corpus.test")
+bot1.train("chatterbot.corpus.english")
+bot2.train("chatterbot.corpus.test")
+#bot1.train("chatterbot.corpus.test")
 response2="What's slappin'?"
 count = 0
 count2 = 0
-chicken = 3
+chicken = 1
 if chicken==1:
     while True:
         count = count + 1
