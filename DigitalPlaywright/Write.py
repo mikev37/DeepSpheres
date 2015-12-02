@@ -5,6 +5,9 @@ from postprocess import replaceTokens
 from PreProcess import tokenize
 from PreProcess import computeVariance
 from PreProcess import reToken
+
+from ArchetypeGen import GetTheStuff
+
 lineA = DataStructures.LineObj("Hamlet",0,0,"DIRECTION","It was a sunny day")
 lineB = DataStructures.LineObj("Hamlet",0,1,"JACKAL","Hello")
 lineC = DataStructures.LineObj("Hamlet",0,2,"TERRY","Hi")
