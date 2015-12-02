@@ -5,6 +5,9 @@ from postprocess import replaceTokens
 from PreProcess import tokenize
 from PreProcess import computeVariance
 from PreProcess import reToken
+from Corpus import SaveCorpusi
+from wordgen import gen_word
+lineO = DataStructures.LineObj("Hamlet",0,0,"DIRECTION","Hamlet")
 lineA = DataStructures.LineObj("Hamlet",0,0,"DIRECTION","It was a sunny day")
 lineB = DataStructures.LineObj("Hamlet",0,1,"JACKAL","Hello")
 lineC = DataStructures.LineObj("Hamlet",0,2,"TERRY","Hi")
@@ -12,7 +15,7 @@ lineD = DataStructures.LineObj("Hamlet",0,3,"DIRECTION","It started raining, the
 lineE = DataStructures.LineObj("Hamlet",0,4,"TERRY","What wonderful weather, 0m2m0")
 lineF = DataStructures.LineObj("Hamlet",0,5,"JACKAL","I can't believe it")
 lineG = DataStructures.LineObj("Hamlet",0,6,"DIRECTION","0m1m0 draws his sword")
-lineAA = [None,lineA]
+lineAA = [lineO,lineA]
 lineAB = [lineA,lineB]
 lineBC = [lineB,lineC]
 lineCD = [lineC,lineD]
@@ -32,7 +35,7 @@ charB.lines = [lineAB,lineEF]
 charA.lines = [lineAA,lineCD,lineFG]
 
 sceneA = DataStructures.SceneObject()
-sceneA.charNum = 3
+sceneA.numChars = 3
 sceneA.length = 1
 sceneA.start = 0
 
@@ -47,6 +50,7 @@ scriptA.tokenList = []
 
 
 ##############################################################3
+lineO1 = DataStructures.LineObj("Hamlet",0,0,"DIRECTION","IHamlet")
 lineA1 = DataStructures.LineObj("Hamlet",0,0,"DIRECTION","It was a sunny day")
 lineB1 = DataStructures.LineObj("Hamlet",0,1,"JACKAL","Hello")
 lineC1 = DataStructures.LineObj("Hamlet",0,2,"TERRY","Hi")
@@ -54,7 +58,7 @@ lineD1 = DataStructures.LineObj("Hamlet",0,3,"DIRECTION","It started raining, th
 lineE1 = DataStructures.LineObj("Hamlet",0,4,"TERRY","What wonderful weather, 0m2m0")
 lineF1 = DataStructures.LineObj("Hamlet",0,5,"JACKAL","I can't believe it")
 lineG1 = DataStructures.LineObj("Hamlet",0,6,"DIRECTION","0m1m0 draws his sword")
-lineAA1 = [None,lineA1]
+lineAA1 = [lineO1,lineA1]
 lineAB1 = [lineA1,lineB1]
 lineBC1 = [lineB1,lineC1]
 lineCD1 = [lineC1,lineD1]
@@ -74,7 +78,7 @@ charB1.lines = [lineAB1,lineEF1]
 charA1.lines = [lineAA1,lineCD1,lineFG1]
 
 sceneB = DataStructures.SceneObject()
-sceneB.charNum = 3
+sceneB.numChars = 3
 sceneB.length = 1
 sceneB.start = 0
 
@@ -119,6 +123,7 @@ for char in scriptB.charList:
         
 
 '''   
+
 tokenList = ['McDonalds']
 reToken(tokenList,scriptA)
 reToken(tokenList,scriptB)   
@@ -128,6 +133,27 @@ print scriptB
 
 #merge play datas until there's only one
 scriptN = mergeDB(scriptA, scriptB)
-
+print ""
+print "-After merge"
+print ""
+for char in scriptN.charList:
+    print char.name
+    for line in char.lines:
+        print "\t"+line[1].text
 print scriptN
-#
+#create corpusi from PlayData
+#SaveCorpusi(scriptN)
+
+#create play
+nameList = []
+tokenList = []
+for char in scriptN.charList:
+    nameList.append(gen_word(2,4))
+for token in scriptN.tokenList:    
+    tokenList.append(gen_word(1, 5))
+    
+
+
+script = createPlay(scriptN)
+
+print replaceTokens(scriptN,script)

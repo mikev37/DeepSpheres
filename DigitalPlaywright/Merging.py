@@ -15,13 +15,13 @@ In this solution, we then use a regex and change the 0t[]t to 0x[]x so we can ke
 This one might be better than the temp data structure idea, actually.
 
 '''
-
+import math
 import DataStructures
 from DataStructures import PlayData
 
 def shouldMerge(corpusA,corpusB):
     #TODO
-    return False
+    return corpusA == corpusB
 '''
 chars to be merged
 new list of characters
@@ -57,30 +57,35 @@ def mergeToken(charA,charB,tokenListA,tokenListB,tokenListN,charList):
 def reIndexT(indexA,indexN,charListN):
     for char in charListN:
         for line in char.lines:
-            line.replace("0x"+indexA+"x0","0t"+indexN+"t0")  
+            line[1].text = line[1].text.replace("0x"+str(indexA)+"x0","0t"+str(indexN)+"t0")  
 
 def reIndex(indexA,indexN,charListA,charListN):
     for char in charListA:
         for line in char.lines:
-            line.replace("0m"+indexA+"m0","0z"+indexN+"z0")
+            line[1].text = line[1].text.replace("0m"+str(indexA)+"m0","0z"+str(indexN)+"z0")
     for char in charListN:
         for line in char.lines:
-            line.replace("0m"+indexA+"m0","0z"+indexN+"z0") 
+            line[1].text = line[1].text.replace("0m"+str(indexA)+"m0","0z"+str(indexN)+"z0") 
             
 def postProcess(playData):
     for char in playData.charList:
+        print char.name
         for line in char.lines:
-            line = postProcessLine(line)
-    for token in playData.tokenList:
-        for line in token.lines:
-            line = postProcessLine(line)       
+            if char.name == 'DIRECTION':
+                print line[1].text
+            line[1].text = postProcessLine(line[1].text)
+    #for token in playData.tokenList:
+    #    for line in token.lines:
+    #        line[1].text = postProcessLine(line[1].text)       
              
 def postProcessLine(line):
-    line.replace("0t","0x")
-    line.replace("t0","x0")
-    line.replace("0z","0m")
-    line.replace("z0","m0")
-    
+    line = line.replace("0t","0x")
+    line = line.replace("t0","x0")
+    line = line.replace("0z","0m")
+    line = line.replace("z0","m0")
+    print "POST PROCESSING LINE"+line
+    print "____________________________________________"
+    return line
     
 
 def mergeDB(DBA,DBB):
@@ -145,17 +150,17 @@ def mergeDB(DBA,DBB):
     
     
     for indexB in unmergedCB:
-        charA = DBB.charList[indexA]
-        charN = DataStructures.CharacterObject(charA.name)
-        charN.lines = charA.lines
-        charN.anger = charA.anger
+        charB = DBB.charList[indexB]
+        charN = DataStructures.CharacterObject(charB.name)
+        charN.lines = charB.lines
+        charN.anger = charB.anger
         DBN.charList.append(charN)
         indexN = DBN.charList.index(charN)
-        reIndex(indexA, indexN, DBA.charList, DBN.charList)
+        reIndex(indexB, indexN, DBB.charList, DBN.charList)
         
         
         
-        
+
     for indexA in unmergedTA:
         tokenA = DBA.tokenList[indexA]
         tokenN = DataStructures.TokenObject(tokenA.name)
@@ -179,9 +184,15 @@ def mergeDB(DBA,DBB):
         
     for scene in DBB.sceneList:
         DBN.sceneList.append(scene)
-    
-    postProcess(DBA)
-    postProcess(DBB)
+    print DBN.charList
+    DBN.meanLength = (DBA.meanLength+DBB.meanLength)/2
+    DBN.meanStart = (DBA.meanStart+DBB.meanStart)/2
+    DBN.numChars = (DBA.numChars+DBB.numChars)/2
+    DBN.numLines = (DBA.numLines +DBB.numLines)/2
+    DBN.numScenes = (DBA.numScenes +DBB.numScenes)/2
+    DBN.charVar = math.sqrt(pow(DBA.numChars - DBB.numChars,2))
+    #postProcess(DBA)
+    #postProcess(DBB)
     postProcess(DBN)
     
     return DBN
