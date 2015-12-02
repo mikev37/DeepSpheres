@@ -26,16 +26,67 @@ chars to be merged
 new list of characters
 list of all line references
 '''
-def mergeChar(charA,charB,charListA,charListB,charListN,lineList):
+def mergeChar(charA,charB,charListA,charListB,charListN):
     
-    charN = DataStructures.CharacterObject()
-    
+    charN = DataStructures.CharacterObject(charA.name+charB.name)
+    charListN.append(charN)
+    indexN = charListN.index(charN)
+    indexA = charListA.index(charA)
+    indexB = charListB.index(charB)
+    for char in charListA:
+        for line in char.lines:
+            line.replace("0m"+indexA+"m0","0t"+indexN+"t0")
+    for char in charListB:
+        for line in char.lines:
+            line.replace("0m"+indexB+"m0","0t"+indexN+"t0")
     charN.lines = charA.lines + charB.lines
     
-    for line in lineList:
-        line.replace("0m"+"m0")
-    #TODO
+    return charN
+
+def mergeToken(charA,charB,charListA,charListB,charListN):
     
+    charN = DataStructures.CharacterObject(charA.name+charB.name)
+    charListN.append(charN)
+    indexN = charListN.index(charN)
+    indexA = charListA.index(charA)
+    indexB = charListB.index(charB)
+    for char in charListA:
+        for line in char.lines:
+            line.replace("0x"+indexA+"x0","0z"+indexN+"z0")
+    for char in charListB:
+        for line in char.lines:
+            line.replace("0x"+indexB+"x0","0z"+indexN+"z0")
+    charN.lines = charA.lines + charB.lines
+
+    return charN
+
+    
+def postProcess(line):
+    line.replace("0t","0x")
+    line.replace("t0","x0")
+    line.replace("0z","0m")
+    line.replace("z0","m0")
+    
+    
+
 def mergeDB(DBA,DBB):
+    DBN = DataStructures.PlayData()
+    
     print "TODO"
+    unmergedCA = []
+    unmergedTA = []
+    unmergedCB = []
+    unmergedTB = []
+    #Go through each character A for each character B
+    
+    #Check if they're mergable
+    
+    #Get a character N for the characters merged
+    
+    #Add all the unmerged characters
+    
+    #Add all the scenes
+    
+    #Recompute statistics
+    
     

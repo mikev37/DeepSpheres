@@ -35,9 +35,10 @@ import DataStructures
 from nltk.tag import pos_tag
 from nltk.corpus import cmudict
 from wordgen import gen_word
-
+import math
 '''
 takes in a line 
+give it a list of all character names and all tokens already known
 replaces all name names with 0m[]m
 replaces all tokens with 0x[]x
 '''
@@ -54,3 +55,22 @@ def tokenize(sentence,tokenList,nameList):
             tokenList.append(noun)
         sentence = sentence.replace(noun, "0x"+str(tokenList.index(noun))+"x0")
 
+'''
+Compute statistics needed for scene generation
+'''
+def computeVariance(playdata):
+    scenes = playdata.scenes
+    meanStart = 0
+    meanLength = 0
+    for scene in scenes:
+        meanStart = meanStart + scene.start
+        meanLength = meanLength + scene.length
+        
+    meanStart = meanStart/len(scenes)
+    meanLength = meanLength/len(scenes)
+    playdata.meanStart = meanStart
+    playdata.meanLength = meanLength
+    for scene in scenes:
+        scene.vLength = math.sqrt(pow(meanLength-scene.length,2))
+        scene.vStart = math.sqrt(pow(meanLength-scene.length,2))
+     

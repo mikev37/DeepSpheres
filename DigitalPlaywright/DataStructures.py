@@ -3,7 +3,7 @@ from wordgen import gen_word
 
 
 
-class Play:
+class PlayData:
     def __init__(self):
         self.charList = []
         self.tokenList = []
@@ -13,12 +13,11 @@ class Play:
 
 class CharacterObject:
     
-    def __init__(self, name, index):
+    def __init__(self, name):
         self.name = name
         self.lines = []
         self.frustration = 0
         self.anger = 0 #number of lines/
-        self.index = index
         
     
     def generateName(self):

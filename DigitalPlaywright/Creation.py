@@ -37,6 +37,7 @@ def createPlay(playdata):
         charBots.append(playdata.charList[j])
     pos = 0
     script = ""
+    #make scenes until done
     while (pos < 1):
         scene = createScene(script, charBots, pos, dirBot)
         script = script + scene['text'] + "\n"
