@@ -5,21 +5,7 @@ def postProcess(line):
     line.replace("t0","x0")
     
     
-class Scene:
-    
-    def __init__(self):
-        self.start = 0
-        self.length = 0
-        self.vLength = 0
-        self.vStart = 0
-        self.characters = []
-        self.directions = []
-        self.name = ""
-    #
-    def getContribution(self,pos):
-        return abs(pos - self.start+self.length/2)
-    
-    
+
 def computeVariance(scenes):
     meanStart = 0
     meanLength = 0
