@@ -6,6 +6,31 @@ import re
 
 saveName = 'data.json'
 
+class PlayData:
+    def __init__(self, name):
+        self.playName = name
+        self.charList = []
+        self.tokenList = []
+        self.sceneList = []
+        self.numChars = 0
+        self.numScenes = 0
+        self.numLines = 0
+        
+class SceneObject:
+    
+    def __init__(self):
+        self.start = 0
+        self.length = 0
+        self.vLength = 0
+        self.vStart = 0
+        self.numChars = 0
+        self.directions = []
+        self.name = ""
+    #
+    def getContribution(self,pos):
+        return abs(pos - self.start+self.length/2)
+    
+
 class LineObj():
     script = ""
     scene = 0
@@ -78,23 +103,66 @@ def split_into_sentences(text):
     sentences = sentences[:-1]
     sentences = [s.strip() for s in sentences]
     return sentences
+
+def makeLineObj(JSONLine):
+    temp = LineObj(JSONLine['scriptName'],
+                   JSONLine['sceneNum'],
+                   JSONLine['lineNum'],
+                   JSONLine['characterName'],
+                   JSONLine['lineText'])
+    return temp
+
+PlayList = []
+scriptWatcher = ""
+lineCounter = 0
+sceneCounter = 0
+charCounter = 0
+
+def resetCounters():
+    global lineCounter
+    global sceneCounter
+    global charCounter
+    lineCounter = -1
+    sceneCounter = -1
+    charCounter = 0
+    return
+    
+def AddToStructures(line):
+    #if new play
+    if line.script != scriptWatcher:
+        scriptWatcher = line.script
+        resetCounters()
+        PlayList.append(PlayData(line.script))
+    lineCounter += 1
+    #if new Scene
+    if line.scene != sceneCounter:
+        sceneCounter += 1
+        temp = SceneObject()
+        temp.start = lineCounter
+    
+        
+    
     
 
 def CombineInChars():
     global masterLineList
     global listCharActors
-    previousLine = ""       #to keep lines in pairs, call and response
+    previousLine = None      #to keep lines in pairs, call and response
     for line in masterLineList:
         print "checking Line"
         found = False
         for actor in listCharActors:
             if actor.name == line['characterName']:         #Find the character in the char list
                 found = True
-                actor.lines.append([previousLine] + split_into_sentences(line['lineText']))
+                actor.lines.append([previousLine, line])
         if not found:
             listCharActors.append(CharActor(line['characterName']))
-            
-        previousLine = line['lineText']
+            for actor in listCharActors:
+                if actor.name == line['characterName']:         #Find the character in the char list
+                    found = True
+                    actor.lines.append([previousLine, line])
+        
+        previousLine = line
             
             
             
