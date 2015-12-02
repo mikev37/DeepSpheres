@@ -1,16 +1,24 @@
 from wordgen import gen_word
 
 
-characterList = []
-tokenList = []
-sceneList = []
-lineLise = []
+
+
+class Play:
+    def __init__(self):
+        self.charList = []
+        self.tokenList = []
+        self.sceneList = []
+        #reference to every line]
+        self.lineList = []
 
 class CharacterObject:
     
     def __init__(self, name):
         self.name = name
         self.lines = []
+        self.frustration = 0
+        self.anger = 0 #number of lines/
+        
     
     def generateName(self):
         self.name = gen_word(1,4)

@@ -3,7 +3,8 @@ from wordgen import gen_word
 def postProcess(line):
     line.replace("0t","0x")
     line.replace("t0","x0")
-    
+    line.replace("0z","0m")
+    line.replace("z0","m0")
     
 
 def computeVariance(scenes):
