@@ -10,7 +10,7 @@ def postProcess(line):
 '''
 given list of characternames and list of tokennames, replace all the temp data with new data
 '''
-def replaceTokens(line,characters,tokens):
+def replaceTokensLine(line,characters,tokens):
     
     for char in characters:
         line.replace("0m"+characters.index(char)+"0m",char)
@@ -18,4 +18,15 @@ def replaceTokens(line,characters,tokens):
         line.replace("0x"+tokens.index(token)+"0x",token)
     
     
+def replaceTokens(playData):
+    charList = []
+    tokenList = []
+    
+    
+    for i in range(0,len(playData.charList)):
+        charList.append(gen_word(2, 4))
+        
+    for i in range(0,len(playData.tokenList)):
+        charList.append(gen_word(2, 4))
+        
     

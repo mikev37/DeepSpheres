@@ -9,7 +9,6 @@ class PlayData:
         self.tokenList = []
         self.sceneList = []
 
-
 class CharacterObject:
     
     def __init__(self, name):
