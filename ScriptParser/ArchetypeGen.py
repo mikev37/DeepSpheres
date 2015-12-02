@@ -115,33 +115,71 @@ def makeLineObj(JSONLine):
 PlayList = []
 scriptWatcher = ""
 lineCounter = 0
-sceneCounter = 0
-charCounter = 0
+sceneCounter = -1
+charWatcher = []
 
 def resetCounters():
     global lineCounter
     global sceneCounter
-    global charCounter
-    lineCounter = -1
+    global charWatcher
+    lineCounter = 0
     sceneCounter = -1
-    charCounter = 0
+    charWatcher = []
+    return
+
+def UpdatePreviousScene():
+    global PlayList
+    global scriptWatcher
+    global lineCounter
+    global sceneCounter
+    global charWatcher
+    temp = next(play for play in PlayList if play.playName == scriptWatcher)
+    temp.sceneList[sceneCounter].numChars = charWatcher.count()
+    charWatcher = []
+    temp.sceneList[sceneCounter].length = lineCounter
+    lineCounter = 0
     return
     
+def UpdatePreviousScript():
+    global PlayList
+    global scriptWatcher
+    global lineCounter
+    global sceneCounter
+    global charWatcher
+    temp = next(play for play in PlayList if play.playName == scriptWatcher)
+    temp.numScenes = temp.sceneList.count()
+    
 def AddToStructures(line):
+    global PlayList
+    global scriptWatcher
+    global lineCounter
+    global sceneCounter
+    global charWatcher
     #if new play
     if line.script != scriptWatcher:
+        UpdatePreviousScene()
         scriptWatcher = line.script
         resetCounters()
         PlayList.append(PlayData(line.script))
     lineCounter += 1
     #if new Scene
     if line.scene != sceneCounter:
-        sceneCounter += 1
+        UpdatePreviousScene()
+        sceneCounter = line.scene
         temp = SceneObject()
         temp.start = lineCounter
-    
+        temp.name = line.scene + " - " + sceneCounter
+        next(play for play in PlayList if play.playName == scriptWatcher).sceneList.append(temp)
+    #if new Character
+    if line.character not in charWatcher:
+        charWatcher.append(line.character)
+    return
         
-    
+def UpdateValuesInPlays(): 
+    global PlayList
+    for play in PlayList:
+        charNum = 0
+        for scene in play.
     
 
 def CombineInChars():
@@ -161,7 +199,7 @@ def CombineInChars():
                 if actor.name == line['characterName']:         #Find the character in the char list
                     found = True
                     actor.lines.append([previousLine, line])
-        
+        AddToStructures(line)
         previousLine = line
             
             
