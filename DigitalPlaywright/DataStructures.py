@@ -13,11 +13,12 @@ class Play:
 
 class CharacterObject:
     
-    def __init__(self, name):
+    def __init__(self, name, index):
         self.name = name
         self.lines = []
         self.frustration = 0
         self.anger = 0 #number of lines/
+        self.index = index
         
     
     def generateName(self):
