@@ -7,6 +7,8 @@ from PreProcess import computeVariance
 from PreProcess import reToken
 from Corpus import SaveCorpusi
 from wordgen import gen_word
+from ArchetypeGen import GetTheStuff
+'''
 lineO = DataStructures.LineObj("Hamlet",0,0,"DIRECTION","Hamlet")
 lineA = DataStructures.LineObj("Hamlet",0,0,"DIRECTION","It was a sunny day")
 lineB = DataStructures.LineObj("Hamlet",0,1,"JACKAL","Hello")
@@ -90,13 +92,15 @@ scriptB.numScenes = 1
 scriptB.sceneList = [sceneB]
 scriptB.tokenList = []
 ######################################################################################
-
+'''
 
 
 #Pull charcters and scenes from all the Line
-
+scriptA = GetTheStuff()[0]
+scriptB = GetTheStuff()[1]
 #tokenize the play and compute statistics
-'''
+
+
 tokenList = []
 nameList = []
 for char in scriptA.charList:
@@ -106,11 +110,10 @@ for char in scriptA.charList:
         print line[1].text
         line[1].text = tokenize(line[1].text, tokenList, nameList)
         print line[1].text
-'''        
-computeVariance(scriptA)
+        
 
 print scriptA
-'''
+
 tokenList = []
 nameList = []
 for char in scriptB.charList:
@@ -122,9 +125,7 @@ for char in scriptB.charList:
         print line[1].text\
         
 
-'''   
-
-tokenList = ['McDonalds']
+computeVariance(scriptA)   
 reToken(tokenList,scriptA)
 reToken(tokenList,scriptB)   
 computeVariance(scriptB)

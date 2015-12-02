@@ -35,6 +35,7 @@ import DataStructures
 from nltk.tag import pos_tag
 from nltk.corpus import cmudict
 from wordgen import gen_word
+import re
 import math
 '''
 takes in a line 
@@ -47,9 +48,11 @@ def tokenize(sentence,tokenList,nameList):
     tagged_sent = pos_tag(sentence.split())
     
     propernouns = [word for word,pos in tagged_sent if pos == 'NNP']
+    print propernouns
+    
     for noun in propernouns:
         if noun.upper() in nameList:
-            sentence = sentence.replace(noun, "0m"+str(nameList.index(noun))+"m0")
+            sentence = sentence.replace(noun, "0m"+str(nameList.index(noun.upper()))+"m0")
         else :
             if noun not in tokenList:
                 tokenList.append(noun)
