@@ -1,7 +1,8 @@
 import random
 import string
-
-vowels = list('aeiou')
+vowels = list('eeeeeeeeeeeeaaaaaaaaiiiiiiiooooooouuu')
+consonants = list('tttttttttnnnnnnnssssssrrrrrrhhhhhhddddllllcccmmmffyywwggppbbvvkkxqjz')
+#vowels = list('aeiou')
 
 def gen_word(min, max):
     word = ''
@@ -23,11 +24,12 @@ def gen_syllable():
 
 def word_part(type):
     if type is 'c':
-        return random.sample([ch for ch in list(string.lowercase) if ch not in vowels], 1)[0]
+        return random.sample(consonants,1)[0]#[ch for ch in list(string.lowercase) if ch not in vowels], 1)[0]
     if type is 'v':
         return random.sample(vowels, 1)[0]
 
 
-
+'''
 for i in range(0, 10):
     print gen_word(2,4)
+'''

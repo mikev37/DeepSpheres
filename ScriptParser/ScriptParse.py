@@ -51,6 +51,21 @@ def ResetGlobals():
     isLine = False    
     return
     
+class SceneObject:
+    
+    def __init__(self):
+        self.start = 0
+        self.length = 0
+        self.vLength = 0
+        self.vStart = 0
+        self.characters = []
+        self.directions = []
+        self.name = ""
+    #
+    def getContribution(self,pos):
+        return abs(pos - self.start+self.length/2)
+    
+    
 
 class LineObj():
     script = ""

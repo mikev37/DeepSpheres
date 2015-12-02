@@ -19,7 +19,7 @@ propernouns = [word for word,pos in tagged_sent if pos == 'NNP']
 for noun in propernouns:
     if noun not in tokenlist:
         tokenlist.append(noun)
-    sentence = sentence.replace(noun, "0x"+str(tokenlist.index(noun)))
+    sentence = sentence.replace(noun, "0x"+str(tokenlist.index(noun))+"x")
     #print nsyl(noun)
     
     
@@ -27,6 +27,6 @@ print sentence
  
 for var in tokenlist:
     word = gen_word(2, 4)
-    sentence = sentence.replace("0x"+str(tokenlist.index(var)),word)
+    sentence = sentence.replace("0x"+str(tokenlist.index(var))+"x",word)
     
 print sentence
