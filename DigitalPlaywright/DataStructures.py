@@ -4,11 +4,45 @@ from wordgen import gen_word
 
 
 class PlayData:
-    def __init__(self):
+    def __init__(self, name):
+        self.playName = name
         self.charList = []
         self.tokenList = []
         self.sceneList = []
+        self.numChars = 0
+        self.numScenes = 0
+        self.numLines = 0
+        self.meanStart = 0
+        self.meanLength = 0
+        
+class SceneObject:
+    
+    def __init__(self):
+        self.start = 0
+        self.length = 0
+        self.vLength = 0
+        self.vStart = 0
+        self.numChars = 0
+        self.directions = []
+        self.name = ""
+    #
+    def getContribution(self,pos):
+        return abs(pos - self.start+self.length/2)
+    
 
+class LineObj():
+    script = ""
+    scene = 0
+    line = 0
+    character = ""
+    text = ""
+    def __init__ (self, name, sc, ln, ch, txt):
+        self.script = name.strip()
+        self.scene = sc
+        self.line = ln
+        self.character = ch.strip()
+        self.text = txt
+    
 class CharacterObject:
     
     def __init__(self, name):
@@ -24,7 +58,7 @@ class CharacterObject:
     def getAllLines(self):
         words = ""
         for line in self.lines:
-            words = words + line.text
+            words = words + line[1].text
         return words
 
 class TokenObject:

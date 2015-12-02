@@ -55,11 +55,23 @@ def tokenize(sentence,tokenList,nameList):
                 tokenList.append(noun)
             sentence = sentence.replace(noun, "0x"+str(tokenList.index(noun))+"x0")
 
+    return sentence
+
+def reToken(tokenList,scriptA):
+    for toke in tokenList:
+        token = DataStructures.TokenObject(toke)
+        for char in scriptA.charList:
+            for line in char.lines:
+                if "0x"+str(tokenList.index(toke))+"x0" in line:
+                    token.lines.append(line)
+                    
+        scriptA.tokenList.append(token)  
+
 '''
 Compute statistics needed for scene generation
 '''
 def computeVariance(playdata):
-    scenes = playdata.scenes
+    scenes = playdata.sceneList
     meanStart = 0
     meanLength = 0
     for scene in scenes:
