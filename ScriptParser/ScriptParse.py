@@ -3,8 +3,7 @@ Created on Nov 2, 2015
 
 @author: karl
 '''
-#!/usr/bin/python
-#import _mysql
+
 
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
@@ -77,7 +76,7 @@ def LineAdd(script, scene, line, characterName, text):
 def SaveAll():
     global masterList
     global saveName
-    for line in masterList:
+    for line in masterList[:-1]:
         data ={
                'scriptName'     :   line.script,
                'sceneNum'       :   line.scene,
@@ -87,6 +86,18 @@ def SaveAll():
                }
         with open(saveName, 'a') as openFile:
             json.dump(data, openFile, indent=3)
+        open(saveName, 'a').write(",")
+    else:                                                   #Don't add the comma if it's the last element
+        data ={
+               'scriptName'     :   line.script,
+               'sceneNum'       :   line.scene,
+               'lineNum'        :   line.line,
+               'characterName'  :   line.character,
+               'lineText'       :   line.text
+               }
+        with open(saveName, 'a') as openFile:
+            json.dump(data, openFile, indent=3)
+        
     return
 
 
@@ -222,10 +233,10 @@ def GetScript(filename):
 # ---BEGIN PROCEDURAL SEQUENCE---
 
 fileList = GetFileList()
-open(saveName, 'w')  #clear old file for creation of new
+open(saveName, 'w').write("{ \"lines\" : [ \n")  #clear old file for creation of new, and open encapsulating JSON object
 for fileName in fileList:
     print "\n" + fileName
     GetScript(sourceLoc + fileName)
     
 SaveAll()
-    
+open(saveName, 'a').write("\n ]}")
