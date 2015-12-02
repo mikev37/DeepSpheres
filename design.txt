@@ -1,0 +1,102 @@
+PreProcessing------------------------------------------
+
+All Characters saved in an object
+	Name : String
+	All lines : String
+	Lines : [Line]
+	
+Array of characters contains all these objects
+
+Each time a character is found in the line text, their name is replaced by 0m[index in character array]m
+
+Tokens are essentially treated as characters
+	Token : String
+	All lines : String
+	Lines : [Line]
+
+After processing for all the characters, all the proper nouns are replaced by 0x[index of proper noun in array]x
+
+Line object 
+	Character : CharObject
+	Call : String
+	Responce : String
+
+All Scene headings get saved in an object
+
+SceneObj
+	Length of Scene as proportion of Play 0 to 1
+	Start of scene as porportion of Play 0 to 1
+	Characters contained
+	Tokens contained
+	
+Merging---------------------------------------------
+
+Create a new temp data structure
+
+For every in 1st db character their All lines field is compared using word2vec to every character in the 2nd db
+If they go beyond a certain similarity index, they are merged, and the new character is added to the new db
+
+All lines are added with new 0m[index]m and add the new characters with a merged All lines and lines
+
+Same is done with tokens, but now if the old line contained the old index, change the corresponding index position in the new db
+
+Alternative to this solution is make the new indexes different from the old ones, for example 0t[index]t will not be confused with 0x[index]x
+In this solution, we then use a regex and change the 0t[]t to 0x[]x so we can keep consistency for merging more than once and processing
+This one might be better than the temp data structure idea, actually.
+
+Corpus Creation--------------------------------------------
+
+Corpusi are created from the character lines. A corpus is made for every character, and only the lines said by that character are added to it.
+[
+	Call,
+	Responce
+]
+Lines that are multiple sentence are split up.
+[
+	Call,
+	Responce,
+	Responce1,
+	Responce2
+]
+For every Token, the same thing is done
+[
+	Token,
+	Responce
+]
+For every direction, all the lines after it get an assosiation with it
+[
+	Direction,
+	Responce
+],
+[
+	Direction,
+	Responce1
+]
+
+These corpusi are used to feed into the chatterbot
+
+Creation---------------------------------------------------
+
+A new Scene is created based on the average computed scene length + variation
+
+scene length is taken as a function of scene length together with scene relation to current position through script
+
+variation is the is the average squared deviation from the mean for scenes weighted by closeness to current position through script
+
+	number of characters and number of character lines are created in a similar fashion
+	Each character has a frustration meter which raises by the number of total lines he has
+	The character with the highest frustration speaks
+	Based on length of responce, the characters frustration and random chance the character's line might be extended, at which point he looks for a responce to his first line and concats it
+	his frustration is then cleared
+
+Post Processing-------------------------------------------
+
+A random word is generated for every character name and token
+
+The 0m[]m and 0x[]x are replaced b y the names
+
+Done
+
+
+
+	

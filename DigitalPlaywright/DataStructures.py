@@ -8,8 +8,7 @@ class PlayData:
         self.charList = []
         self.tokenList = []
         self.sceneList = []
-        #reference to every line]
-        self.lineList = []
+
 
 class CharacterObject:
     

@@ -17,6 +17,7 @@ This one might be better than the temp data structure idea, actually.
 '''
 
 import DataStructures
+from DataStructures import PlayData
 
 def shouldMerge(corpusA,corpusB):
     #TODO
@@ -29,39 +30,52 @@ list of all line references
 def mergeChar(charA,charB,charListA,charListB,charListN):
     
     charN = DataStructures.CharacterObject(charA.name+charB.name)
+    charN.anger = (charA.anger+charB.anger)/2
+    charN.lines = charA.lines + charB.lines
     charListN.append(charN)
     indexN = charListN.index(charN)
     indexA = charListA.index(charA)
     indexB = charListB.index(charB)
-    for char in charListA:
-        for line in char.lines:
-            line.replace("0m"+indexA+"m0","0t"+indexN+"t0")
-    for char in charListB:
-        for line in char.lines:
-            line.replace("0m"+indexB+"m0","0t"+indexN+"t0")
-    charN.lines = charA.lines + charB.lines
+    reIndex(indexA, indexN, charListA, charListN)
+    reIndex(indexB, indexN, charListB, charListN)
+
     
     return charN
 
-def mergeToken(charA,charB,charListA,charListB,charListN):
+def mergeToken(charA,charB,tokenListA,tokenListB,tokenListN,charList):
     
-    charN = DataStructures.CharacterObject(charA.name+charB.name)
-    charListN.append(charN)
-    indexN = charListN.index(charN)
-    indexA = charListA.index(charA)
-    indexB = charListB.index(charB)
-    for char in charListA:
-        for line in char.lines:
-            line.replace("0x"+indexA+"x0","0z"+indexN+"z0")
-    for char in charListB:
-        for line in char.lines:
-            line.replace("0x"+indexB+"x0","0z"+indexN+"z0")
+    charN = DataStructures.TokenObject(charA.name+charB.name)
     charN.lines = charA.lines + charB.lines
-
+    tokenListN.append(charN)
+    indexN = tokenListN.index(charN)
+    indexA = tokenListA.index(charA)
+    indexB = tokenListB.index(charB)
+    reIndexT(indexA, indexN, charList)
+    reIndexT(indexB, indexN, charList)
     return charN
 
-    
-def postProcess(line):
+def reIndexT(indexA,indexN,charListN):
+    for char in charListN:
+        for line in char.lines:
+            line.replace("0x"+indexA+"x0","0t"+indexN+"t0")  
+
+def reIndex(indexA,indexN,charListA,charListN):
+    for char in charListA:
+        for line in char.lines:
+            line.replace("0m"+indexA+"m0","0z"+indexN+"z0")
+    for char in charListN:
+        for line in char.lines:
+            line.replace("0m"+indexA+"m0","0z"+indexN+"z0") 
+            
+def postProcess(playData):
+    for char in playData.charList:
+        for line in char.lines:
+            line = postProcessLine(line)
+    for token in playData.tokenList:
+        for line in token.lines:
+            line = postProcessLine(line)       
+             
+def postProcessLine(line):
     line.replace("0t","0x")
     line.replace("t0","x0")
     line.replace("0z","0m")
@@ -77,16 +91,98 @@ def mergeDB(DBA,DBB):
     unmergedTA = []
     unmergedCB = []
     unmergedTB = []
+    for char in DBA.charList:
+        unmergedCA.append(DBA.charList.index(char))
+    for char in DBA.tokenList:
+        unmergedTA.append(DBA.charList.index(char))
+    for char in DBB.charList:
+        unmergedCB.append(DBA.charList.index(char))
+    for char in DBB.tokenList:
+        unmergedTB.append(DBA.charList.index(char))
+        
+    for charA in DBA.charList:
+        indexA = DBA.charList.index(charA)
+        if indexA not in unmergedCA:
+            continue
+        for charB in DBB.charList:
+            indexB = DBB.charList.index(charB)
+            if(indexB not in unmergedCB):
+                continue
+            if(shouldMerge(charA.getAllLines(), charB.getAllLines())):
+                mergeChar(charA, charB, DBA.charList,DBB.charList, DBN.charList)
+                unmergedCB.remove(indexB)
+                unmergedCA.remove(indexA)
     #Go through each character A for each character B
     
     #Check if they're mergable
     
     #Get a character N for the characters merged
     
-    #Add all the unmerged characters
+    for tokenA in DBA.tokenList:
+        indexA = DBA.tokenList.index(tokenA)
+        if indexA not in unmergedTA:
+            continue
+        for tokenB in DBB.tokenList:
+            indexB = DBB.tokenList.index(tokenB)
+            if indexB not in unmergedTB:
+                continue           
+            if(shouldMerge(charA.getAllLines(), charB.getAllLines())):
+                mergeToken(tokenA, tokenB, DBA.tokenList, DBB.tokenList, DBN.tokenList, DBN.charList)
+                unmergedTB.remove(indexB)
+                unmergedTA.remove(indexA)
     
+    
+    
+    #Add all the unmerged characters
+    for indexA in unmergedCA:
+        charA = DBA.charList[indexA]
+        charN = DataStructures.CharacterObject(charA.name)
+        charN.lines = charA.lines
+        charN.anger = charA.anger
+        DBN.charList.append(charN)
+        indexN = DBN.charList.index(charN)
+        reIndex(indexA, indexN, DBA.charList, DBN.charList)
+    
+    
+    for indexB in unmergedCB:
+        charA = DBB.charList[indexA]
+        charN = DataStructures.CharacterObject(charA.name)
+        charN.lines = charA.lines
+        charN.anger = charA.anger
+        DBN.charList.append(charN)
+        indexN = DBN.charList.index(charN)
+        reIndex(indexA, indexN, DBA.charList, DBN.charList)
+        
+        
+        
+        
+    for indexA in unmergedTA:
+        tokenA = DBA.tokenList[indexA]
+        tokenN = DataStructures.TokenObject(tokenA.name)
+        tokenN.lines = tokenA.lines
+        DBN.tokenList.append(tokenN)
+        indexN = DBN.tokenList.index(tokenN)
+        reIndexT(indexA, indexN, DBN.charList)
+    
+    
+    for indexB in unmergedTB:
+        tokenB = DBB.tokenList[indexB]
+        tokenN = DataStructures.TokenObject(tokenB.name)
+        tokenN.lines = tokenB.lines
+        DBN.tokenList.append(tokenN)
+        indexN = DBN.tokenList.index(tokenN)
+        reIndexT(indexB, indexN, DBN.charList)
     #Add all the scenes
     
-    #Recompute statistics
+    for scene in DBA.sceneList:
+        DBN.sceneList.append(scene)
+        
+    for scene in DBB.sceneList:
+        DBN.sceneList.append(scene)
     
+    postProcess(DBA)
+    postProcess(DBB)
+    postProcess(DBN)
+    
+    return DBN
     
