@@ -84,7 +84,7 @@ def postProcessLine(line):
     
 
 def mergeDB(DBA,DBB):
-    DBN = DataStructures.PlayData()
+    DBN = DataStructures.PlayData(DBA.playName+DBB.playName)
     
     print "TODO"
     unmergedCA = []
@@ -94,11 +94,11 @@ def mergeDB(DBA,DBB):
     for char in DBA.charList:
         unmergedCA.append(DBA.charList.index(char))
     for char in DBA.tokenList:
-        unmergedTA.append(DBA.charList.index(char))
+        unmergedTA.append(DBA.tokenList.index(char))
     for char in DBB.charList:
-        unmergedCB.append(DBA.charList.index(char))
+        unmergedCB.append(DBB.charList.index(char))
     for char in DBB.tokenList:
-        unmergedTB.append(DBA.charList.index(char))
+        unmergedTB.append(DBB.tokenList.index(char))
         
     for charA in DBA.charList:
         indexA = DBA.charList.index(charA)
