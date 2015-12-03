@@ -195,29 +195,33 @@ def AddToStructures(line):
         charWatcher.append(line.character)
     return
 
-    
+def getPlayinList(name):
+    global PlayList
+    for play in PlayList:
+        if play.playName == name:
+            return play
 
 def CombineInChars():
     global masterLineList
+    global PlayList
     tempLine = makeLineObj(masterLineList[0])
     previousLine = LineObj(tempLine.script, 0, 0, "DIRECTION", tempLine.script)      #to keep lines in pairs, call and response
     for jline in masterLineList:
         line = makeLineObj(jline)
-        print "checking Line"
         found = False
         AddToStructures(line)
-        tempPlay = next(play for play in PlayList if play.playName == scriptWatcher)
-        for actor in tempPlay.charList:
+        for actor in getPlayinList(scriptWatcher).charList:
             if actor.name == line.character:         #Find the character in the char list
                 found = True
                 actor.lines.append([previousLine, line])
         if not found:
-            tempPlay.charList.append(CharActor(line.character))
-            for actor in tempPlay.charList:
+            getPlayinList(scriptWatcher).charList.append(CharActor(line.character))
+            for actor in getPlayinList(scriptWatcher).charList:
                 if actor.name == line.character:         #Find the character in the char list
                     found = True
                     actor.lines.append([previousLine, line])
         previousLine = line
+    return
             
             
 def ProofOfConceptPrint():
@@ -225,10 +229,13 @@ def ProofOfConceptPrint():
     for play in PlayList:
         print "Play: " + play.playName + "  (" + str(play.numChars) + " characters)"
         for guy in play.charList:
-            print "    character: " + guy.name
-            for line in guy.lines:
-                print "        +Given: " + line[0].text
-                print "        -Response: " + line[1].text
+            print "    character: " + guy.name + " " + str(len(guy.lines))
+            #for line in guy.lines:
+            #    if someNum > 200:
+            #        break
+            #    someNum += 1
+            #    print "        +Given: " + line[0].text
+            #    print "        -Response: " + line[1].text
     return
 
 def GetTheStuff():
@@ -237,7 +244,7 @@ def GetTheStuff():
     CombineInChars()
     return PlayList
     
-    
+GetTheStuff()  
 ProofOfConceptPrint()
 print "done"
 
