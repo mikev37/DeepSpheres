@@ -26,4 +26,5 @@ def SaveCorpusi(playData):
         openFile.write("\n }")
         openFile.close()
         os.chdir("..")
+    os.chdir("..")
     return

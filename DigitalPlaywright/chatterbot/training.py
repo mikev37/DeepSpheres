@@ -10,6 +10,9 @@ class Trainer(object):
 
     def train_from_list(self, conversation):
 
+        print "CONVERSATION "
+        print conversation
+        print ""
         recent_statements = []
 
         for text in conversation:
@@ -30,6 +33,9 @@ class Trainer(object):
             self.chatbot.storage.update(statement)
 
     def train_from_corpora(self, corpora):
+        print "CORPORA"
+        print corpora
+        print ""
         for corpus in corpora:
             corpus_data = self.corpus.load_corpus(corpus)
             for data in corpus_data:

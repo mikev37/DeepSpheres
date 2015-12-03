@@ -42,4 +42,6 @@ print "What a fag " + str(count2)
 
             
     
-    
+
+
+print ord("c")    

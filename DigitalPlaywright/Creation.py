@@ -27,6 +27,7 @@ def makeBot(playName,name):
     bot.gg()
     bot = ChatBot(pame)
     print playName+'.'+pame
+    print os.getcwd()
     bot.train(playName+'.'+pame)
     return bot
 

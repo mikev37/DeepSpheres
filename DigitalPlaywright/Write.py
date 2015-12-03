@@ -107,7 +107,9 @@ scriptB = masterList[1]
 #tokenize the play and compute statistics
 
 scriptA.playName = removePunctuation(printAble(scriptA.playName))
+scriptA.playName = scriptA.playName.replace(" ", "")
 scriptB.playName = removePunctuation(printAble(scriptB.playName))
+scriptB.playName = scriptA.playName.replace(" ", "")
 
 tokenList = []
 nameList = []
@@ -123,7 +125,7 @@ for char in scriptA.charList:
 for char in scriptA.charList:
     for line in char.lines:
         print line[1].text
-        line[0].text = printAble(line[0].text)
+        line[0].text = removePunctuation(printAble(line[0].text))
         line[1].text = tokenize(line[1].text, tokenList, nameList)
         print line[1].text
 
@@ -133,7 +135,7 @@ for char in scriptB.charList:
 for char in scriptB.charList:
     for line in char.lines:
         print line[1].text
-        line[0].text = printAble(line[0].text)
+        line[0].text = removePunctuation(printAble(line[0].text))
         line[1].text = tokenize(line[1].text, tokenList, nameList)
         print line[1].text
 
@@ -147,7 +149,7 @@ print scriptB
 
 #merge play datas until there's only one
 
-scriptN = mergeDB(scriptA, scriptB)
+scriptN = scriptA = mergeDB(scriptA, scriptB)
 
 print ""
 print "-After merge"
@@ -176,7 +178,7 @@ script = createPlay(scriptN)
 script = replaceTokens(scriptN,script)
 
 
-file = open('outputTest.txt','w')
+file = open('outputTest2.txt','w')
 script = ''.join([c for c in script if c in string.printable])
 file.write(script)
 file.close()
