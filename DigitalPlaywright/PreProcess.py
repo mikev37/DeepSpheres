@@ -44,6 +44,16 @@ give it a list of all character names and all tokens already known
 replaces all name names with 0m[]m
 replaces all tokens with 0x[]x
 '''
+
+def keepPunctuation(str):
+    return ''.join([c for c in str.strip() if c in string.punctuation])
+
+def removePunctuation(str):
+    return ''.join([c for c in str.strip() if c not in string.punctuation])
+
+def printAble(str):
+    return ''.join([c for c in str.strip() if c in string.printable])
+
 def tokenize(sentence,tokenList,nameList):
     
     tagged_sent = pos_tag(sentence.split())
@@ -52,17 +62,17 @@ def tokenize(sentence,tokenList,nameList):
     print propernouns
     
     for noun in propernouns:
-        poun = noun.translate(string.maketrans("",""), string.punctuation)
+        poun = removePunctuation(noun)
         if poun.upper() in nameList:
-            sentence = sentence.replace(noun, "0m"+str(nameList.index(noun.upper()))+"m0")
-        elif percentageUpper(noun) or "\'" in noun > .5 :
+            sentence = sentence.replace(noun, "0m"+str(nameList.index(poun.upper()))+"m0"+keepPunctuation(noun))
+        elif percentageUpper(noun) > .5  or "\'" in noun :
             continue
         else :
             if noun not in tokenList:
                 tokenList.append(noun)
             sentence = sentence.replace(noun, "0x"+str(tokenList.index(noun))+"x0")
 
-    return sentence
+    return printAble(sentence)
 
 def percentageUpper(text):
     s = ''.join([c for c in text if c.isupper()])

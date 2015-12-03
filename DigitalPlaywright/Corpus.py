@@ -20,8 +20,7 @@ def SaveCorpusi(playData):
         for line in char.lines:
             print line[0].text
             print line[1].text
-            dataLine =[line[0].text]
-            dataLine = dataLine + split_into_sentences(line[1].text)
+            dataLine =[line[0].text,line[1].text]
             data.append(dataLine)
         json.dump(data, openFile, indent=3)
         openFile.write("\n }")

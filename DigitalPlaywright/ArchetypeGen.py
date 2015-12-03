@@ -180,7 +180,7 @@ def CombineInChars():
     previousLine = LineObj(tempLine.script, 0, 0, "DIRECTION", tempLine.script)      #to keep lines in pairs, call and response
     for jline in masterLineList:
         line = makeLineObj(jline)
-        print "checking Line"
+        #print "checking Line"
         found = False
         AddToStructures(line)
         tempPlay = getPlayinList(scriptWatcher)
@@ -214,7 +214,7 @@ def GetTheStuff():
     CombineInChars()
     return PlayList
     
-GetTheStuff()
+
 ProofOfConceptPrint()
 print "done"
 

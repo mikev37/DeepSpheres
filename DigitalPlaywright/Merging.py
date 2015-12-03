@@ -21,28 +21,31 @@ import DataStructures
 from DataStructures import PlayData
 
 def shouldMerge(corpusA,corpusB):
-    count=0
-    simTotal=0.0
-    #Test each given and get the most similar given
-    #Loop through all lines on the other corpus
-    for lineA in corpusA:
-        count=count+1
-        simularity=0.0
-        holdB="blank"
-        for lineB in corpusB:
-            tempComp=fuzzywuzzy.fuzz.WRatio(lineA[0].text,lineB[0].text)
-            if simularity<tempComp:
-                simularity=tempComp
-                holdB=lineB
-        #Test simularity of responses to the most similar givens
-        simularity=1.0*simularity/100
-        print lineA[0].text+"\n"+holdB[0].text+"\nGiven:"+str(simularity)
-        temp=1.0*fuzzywuzzy.fuzz.WRatio(lineA[1].text,holdB[1].text)/100
-        print lineA[1].text+"\n"+holdB[1].text+"\nResponse:"+str(temp)
-        simTotal=simTotal+temp*simularity
-    simularityA=simTotal/count*100/count
-    print "Shouldmerge Debug:"+str(simularityA)
-    return simularity>.5
+    try:
+        count=0
+        simTotal=0.0
+        #Test each given and get the most similar given
+        #Loop through all lines on the other corpus
+        for lineA in corpusA:
+            count=count+1
+            simularity=0.0
+            holdB="blank"
+            for lineB in corpusB:
+                tempComp=fuzzywuzzy.fuzz.WRatio(lineA[0].text,lineB[0].text)
+                if simularity<tempComp:
+                    simularity=tempComp
+                    holdB=lineB
+            #Test simularity of responses to the most similar givens
+            simularity=1.0*simularity/100
+            print lineA[0].text+"\n"+holdB[0].text+"\nGiven:"+str(simularity)
+            temp=1.0*fuzzywuzzy.fuzz.WRatio(lineA[1].text,holdB[1].text)/100
+            print lineA[1].text+"\n"+holdB[1].text+"\nResponse:"+str(temp)
+            simTotal=simTotal+temp*simularity
+        simularityA=simTotal/count*100/count
+        print "Shouldmerge Debug:"+str(simularityA)
+        return simularity>.5
+    except AttributeError:
+        return False
 '''
 chars to be merged
 new list of characters
@@ -136,8 +139,10 @@ def mergeDB(DBA,DBB):
                 continue
             if(shouldMerge(charA.lines, charB.lines)):
                 mergeChar(charA, charB, DBA.charList,DBB.charList, DBN.charList)
-                unmergedCB.remove(indexB)
-                unmergedCA.remove(indexA)
+                if indexB in unmergedCB:
+                    unmergedCB.remove(indexB)
+                if indexA in unmergedCA:
+                    unmergedCA.remove(indexA)
     #Go through each character A for each character B
     
     #Check if they're mergable

@@ -7,6 +7,9 @@ from PreProcess import computeVariance
 from PreProcess import reToken
 from Corpus import SaveCorpusi
 from wordgen import gen_word
+import string
+from PreProcess import printAble
+from PreProcess import removePunctuation
 from ArchetypeGen import GetTheStuff
 '''
 lineO = DataStructures.LineObj("Hamlet",0,0,"DIRECTION","Hamlet")
@@ -92,36 +95,56 @@ scriptB.numScenes = 1
 scriptB.sceneList = [sceneB]
 scriptB.tokenList = []
 ######################################################################################
-
-
 '''
+
+
 #Pull charcters and scenes from all the Line
-scriptA = GetTheStuff()[0]
-scriptB = GetTheStuff()[1]
+
+masterList = GetTheStuff()
+scriptA = masterList[0]
+scriptB = masterList[1]
 
 #tokenize the play and compute statistics
 
+scriptA.playName = removePunctuation(printAble(scriptA.playName))
+scriptB.playName = removePunctuation(printAble(scriptB.playName))
 
 tokenList = []
 nameList = []
-'''
+
+for char in scriptA.charList:
+    for line in char.lines:
+        print line[1].text
+        
+
+for char in scriptA.charList:
+    char.name = printAble(char.name)
+    nameList.append(char.name)
+for char in scriptA.charList:
+    for line in char.lines:
+        print line[1].text
+        line[0].text = printAble(line[0].text)
+        line[1].text = tokenize(line[1].text, tokenList, nameList)
+        print line[1].text
+
 for char in scriptB.charList:
+    char.name = printAble(char.name)
     nameList.append(char.name)
 for char in scriptB.charList:
     for line in char.lines:
         print line[1].text
+        line[0].text = printAble(line[0].text)
         line[1].text = tokenize(line[1].text, tokenList, nameList)
-<<<<<<< HEAD
         print line[1].text
-'''
+
 
 computeVariance(scriptA)   
-#reToken(tokenList,scriptA)
-#reToken(tokenList,scriptB)   
+reToken(tokenList,scriptA)
+reToken(tokenList,scriptB)   
 computeVariance(scriptB)
 
 print scriptB
-'''
+
 #merge play datas until there's only one
 
 scriptN = mergeDB(scriptA, scriptB)
@@ -135,12 +158,9 @@ for char in scriptN.charList:
         print "\t"+line[1].text
 print scriptN
 
-'''
-scriptA.playName = "NScript"
-
 #create corpusi from PlayData
-#SaveCorpusi(scriptA)
-'''
+SaveCorpusi(scriptN)
+
 #create play
 nameList = []
 tokenList = []
@@ -149,8 +169,14 @@ for char in scriptN.charList:
 for token in scriptN.tokenList:    
     tokenList.append(gen_word(1, 5))
     
-'''
 
-script = createPlay(scriptA)
-print script
-#print replaceTokens(scriptA,script)
+
+script = createPlay(scriptN)
+#print script
+script = replaceTokens(scriptN,script)
+
+
+file = open('outputTest.txt','w')
+script = ''.join([c for c in script if c in string.printable])
+file.write(script)
+file.close()
