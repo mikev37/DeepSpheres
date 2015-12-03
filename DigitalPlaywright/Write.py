@@ -116,6 +116,7 @@ print len(scriptC.charList)
 '''
 tokenList = []
 nameList = []
+'''
 for char in scriptA.charList:
     nameList.append(char.name)
 for char in scriptA.charList:
@@ -124,7 +125,7 @@ for char in scriptA.charList:
         line[1].text = tokenize(line[1].text, tokenList, nameList)
         print line[1].text
         
-
+'''
 print scriptA
 
 tokenList = []
@@ -135,7 +136,7 @@ for char in scriptB.charList:
     for line in char.lines:
         print line[1].text
         line[1].text = tokenize(line[1].text, tokenList, nameList)
-        print line[1].text\
+        print line[1].text
         
 
 computeVariance(scriptA)   
