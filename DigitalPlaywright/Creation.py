@@ -16,14 +16,18 @@ variation is the is the average squared deviation from the mean for scenes weigh
 import DataStructures
 import random
 import math
+import string
 from chatterbot import ChatBot
 import os
 def makeBot(playName,name):
-    bot = ChatBot(name)
+    pame = name.replace(".","")
+    pame = pame.replace("/","")
+    pame = filter(lambda x: x in string.printable,pame)
+    bot = ChatBot(pame)
     bot.gg()
-    bot = ChatBot(name)
+    bot = ChatBot(pame)
 
-    bot.train(playName+'.'+name)
+    bot.train(playName+'.'+pame)
     return bot
 
 def createPlay(playdata):
@@ -73,13 +77,23 @@ def createScene(playdata,characters, pos, castBots,charList):
         scene.length = scene.length + (part.length + random.random()*part.vLength)*part.getContribution(pos)
         numChars = math.floor(numChars + part.numChars*part.getContribution(pos))
         #dirAnger = math.ceil(len(part.characters)*part.getContribution(pos))
+        
     scene.length = scene.length/len(playdata.sceneList)
-    numChars = numChars/len(playdata.sceneList)
+    scene.length = max(scene.length,.1)
+    numChars = max([numChars,3])
     numLines = playdata.numLines*scene.length
     chatBots = []
     print scene.length
     print numChars
-    for i in range(0,int(numChars)):
+    for i in range(2,int(numChars)):
+        j = random.randint(0,len(characters)-1)
+        chars.append(characters[j])
+        chatBots.append(castBots[j])
+        
+    if len(chars) < 2:
+        j = random.randint(0,len(characters)-1)
+        chars.append(characters[j])
+        chatBots.append(castBots[j])
         j = random.randint(0,len(characters)-1)
         chars.append(characters[j])
         chatBots.append(castBots[j])

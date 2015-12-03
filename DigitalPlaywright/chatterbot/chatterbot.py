@@ -99,14 +99,14 @@ class ChatBot(object):
             self.recent_statements
         )
         
-        print "Closest: "+str(closest_match)
+        #print "Closest: "+str(closest_match)
 
         # Get all statements that are in response to the closest match
         response_list = self.storage.filter(
             in_response_to__contains=closest_match.text
         )
 
-        print response_list
+        #print response_list
 
         if response_list:
             response = self.get_most_frequent_response(closest_match, response_list)
@@ -136,8 +136,8 @@ class ChatBot(object):
 
         # Process the response output with the IO adapter
         response = self.io.process_response(response)
-        if(random.randint(0,2)>0 and len(response)<random.randint(0,200)):
-            response = self.get_response(response)
+        #if(random.randint(0,2)>0 and len(response)<random.randint(0,200)):
+        #    response = self.get_response(response)
         return response
 
     def get_input(self):

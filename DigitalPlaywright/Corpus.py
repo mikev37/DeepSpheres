@@ -1,14 +1,18 @@
 import json
 import os
+import string
 from ArchetypeGen import split_into_sentences
 
 def SaveCorpusi(playData):
     os.mkdir("./"+playData.playName)
     os.chdir("./"+playData.playName)
     for char in playData.charList:
-        os.mkdir("./"+char.name)
-        saveName = str(char.name)+'.json'
-        os.chdir("./"+char.name)
+        name = char.name.replace(".","")
+        name = name.replace("/","")
+        name = filter(lambda x: x in string.printable,name)
+        os.mkdir("./"+name)
+        saveName = str(name)+'.json'
+        os.chdir("./"+name)
         openFile = open(saveName, 'w')
         openFile.write("{ \"lines\" :  \n") 
         print char.name

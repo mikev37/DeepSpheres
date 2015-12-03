@@ -98,8 +98,8 @@ scriptB.tokenList = []
 
 #Pull charcters and scenes from all the Line
 scriptA = GetTheStuff()[0]
-scriptB = GetTheStuff()[3]
-scriptC = GetTheStuff()[6]
+scriptB = GetTheStuff()[1]
+
 #tokenize the play and compute statistics
 '''
 print len(scriptA.charList)
@@ -130,6 +130,7 @@ print scriptA
 
 tokenList = []
 nameList = []
+'''
 for char in scriptB.charList:
     nameList.append(char.name)
 for char in scriptB.charList:
@@ -137,15 +138,14 @@ for char in scriptB.charList:
         print line[1].text
         line[1].text = tokenize(line[1].text, tokenList, nameList)
         print line[1].text
-        
-
+'''
 computeVariance(scriptA)   
-reToken(tokenList,scriptA)
-reToken(tokenList,scriptB)   
+#reToken(tokenList,scriptA)
+#reToken(tokenList,scriptB)   
 computeVariance(scriptB)
 
 print scriptB
-
+'''
 #merge play datas until there's only one
 scriptN = mergeDB(scriptA, scriptB)
 print ""
@@ -156,9 +156,11 @@ for char in scriptN.charList:
     for line in char.lines:
         print "\t"+line[1].text
 print scriptN
+'''
+scriptA.playName = "NScript"
 #create corpusi from PlayData
-SaveCorpusi(scriptN)
-
+#SaveCorpusi(scriptA)
+'''
 #create play
 nameList = []
 tokenList = []
@@ -167,8 +169,8 @@ for char in scriptN.charList:
 for token in scriptN.tokenList:    
     tokenList.append(gen_word(1, 5))
     
+'''
 
-
-script = createPlay(scriptN)
-
-print replaceTokens(scriptN,script)
+script = createPlay(scriptA)
+print script
+#print replaceTokens(scriptA,script)

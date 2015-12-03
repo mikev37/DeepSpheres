@@ -73,6 +73,7 @@ def reToken(tokenList,scriptA):
         token = DataStructures.TokenObject(toke)
         for char in scriptA.charList:
             for line in char.lines:
+                print "rt \r"
                 if "0x"+str(tokenList.index(toke))+"x0" in line:
                     token.lines.append(line)
                     
@@ -93,6 +94,7 @@ def computeVariance(playdata):
     meanLength = meanLength/len(scenes)
     playdata.meanStart = meanStart
     playdata.meanLength = meanLength
+    playdata.numLines = playdata.numLines/2
     for scene in scenes:
         scene.vLength = math.sqrt(pow(meanLength-scene.length,2))
         scene.vStart = math.sqrt(pow(meanLength-scene.length,2))
