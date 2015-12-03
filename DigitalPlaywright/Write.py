@@ -8,6 +8,7 @@ from PreProcess import reToken
 from Corpus import SaveCorpusi
 from wordgen import gen_word
 from ArchetypeGen import GetTheStuff
+import string
 '''
 lineO = DataStructures.LineObj("Hamlet",0,0,"DIRECTION","Hamlet")
 lineA = DataStructures.LineObj("Hamlet",0,0,"DIRECTION","It was a sunny day")
@@ -96,11 +97,22 @@ scriptB.tokenList = []
 
 
 #Pull charcters and scenes from all the Line
-scriptA = GetTheStuff()[0]
+scriptA = GetTheStuff()[1]
 scriptB = GetTheStuff()[1]
+scriptC = GetTheStuff()[2]
 #tokenize the play and compute statistics
-
-
+print len(scriptA.charList)
+file = open("scripaA.txt",'w')
+file.write(scriptA.playName)
+for char in scriptA.charList:
+    line = str(char.name)+str(len(char.lines))
+    for line in char.lines:
+        
+        line = filter(lambda x: x in string.printable,str(char.name)+ line[1].text)
+        file.write(line+"\n")
+file.close()
+print len(scriptC.charList)
+'''
 tokenList = []
 nameList = []
 for char in scriptA.charList:
@@ -158,3 +170,4 @@ for token in scriptN.tokenList:
 script = createPlay(scriptN)
 
 print replaceTokens(scriptN,script)
+'''

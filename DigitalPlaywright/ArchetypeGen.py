@@ -3,7 +3,7 @@
 
 import json
 import re
-
+import DataStructures
 saveName = 'data.json'
 
 class PlayData:
@@ -57,12 +57,6 @@ def GetLines():
         masterLineList.append(lineObject)
 
 
-
-class CharActor():
-    name = ""
-    lines = []
-    def __init__ (self, name):
-        self.name = name.strip()
 
 listCharActors = []
 
@@ -135,7 +129,7 @@ def UpdatePreviousScene():
     global lineCounter
     global sceneCounter
     global charWatcher
-    temp = next(play for play in PlayList if play.playName == scriptWatcher)
+    temp = getPlayinList(scriptWatcher)
     scene = next(scene for scene in temp.sceneList if scene.name == str(sceneCounter))
     scene.numChars = len(charWatcher)
     charWatcher = []
@@ -149,7 +143,7 @@ def UpdatePreviousScript():
     global lineCounter
     global sceneCounter
     global charWatcher
-    temp = next(play for play in PlayList if play.playName == scriptWatcher)
+    temp = getPlayinList(scriptWatcher)
     temp.numScenes = len(temp.sceneList)
     temp.numChars = len(temp.charList)
     lineCount = 0
@@ -169,6 +163,10 @@ def AddToStructures(line):
     global charWatcher
     global firstScene
     global firstPlay
+    
+    if line.scene == sceneCounter and line.script == scriptWatcher:
+        return
+    
     #if new play
     if line.script != scriptWatcher:
         if not firstPlay:
@@ -188,14 +186,18 @@ def AddToStructures(line):
         temp = SceneObject()
         temp.start = lineCounter
         temp.name = str(sceneCounter)
-        next(play for play in PlayList if play.playName == scriptWatcher).sceneList.append(temp)
+        getPlayinList(scriptWatcher).sceneList.append(temp)
         firstScene = False
     #if new Character
     if line.character not in charWatcher:
         charWatcher.append(line.character)
     return
 
-    
+def getPlayinList(name):
+    global PlayList
+    for play in PlayList:
+        if play.playName == name:
+            return play
 
 def CombineInChars():
     global masterLineList
@@ -206,13 +208,13 @@ def CombineInChars():
         print "checking Line"
         found = False
         AddToStructures(line)
-        tempPlay = next(play for play in PlayList if play.playName == scriptWatcher)
+        tempPlay = getPlayinList(scriptWatcher)
         for actor in tempPlay.charList:
             if actor.name == line.character:         #Find the character in the char list
                 found = True
                 actor.lines.append([previousLine, line])
         if not found:
-            tempPlay.charList.append(CharActor(line.character))
+            tempPlay.charList.append(DataStructures.CharacterObject(line.character))
             for actor in tempPlay.charList:
                 if actor.name == line.character:         #Find the character in the char list
                     found = True
@@ -225,10 +227,10 @@ def ProofOfConceptPrint():
     for play in PlayList:
         print "Play: " + play.playName + "  (" + str(play.numChars) + " characters)"
         for guy in play.charList:
-            print "    character: " + guy.name
+            print "\tcharacter: " + guy.name
             for line in guy.lines:
-                print "        +Given: " + line[0].text
-                print "        -Response: " + line[1].text
+                print "\t\t+Given: " + line[0].text
+                print "\t\t-Response: " + line[1].text
     return
 
 def GetTheStuff():
@@ -237,7 +239,7 @@ def GetTheStuff():
     CombineInChars()
     return PlayList
     
-    
+GetTheStuff()
 ProofOfConceptPrint()
 print "done"
 
