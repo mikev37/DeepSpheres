@@ -19,16 +19,122 @@ import math
 import string
 from chatterbot import ChatBot
 import os
-def makeBot(playName,name):
+def makeBot(playName,name,char):
+    list = [
+    "AARON",
+    "AARONDAPHNE",
+    "ABBY",
+    "ALDOUS",
+    "CAPTAIN KNOB",
+    "CLASSICAL MUSIC VP",
+    "CLUB ATTENDANT",
+    "CLUB WAITRESS",
+    "CROWD",
+    "DAPHNE",
+    "DAPHNES FRIENDHALDIR",
+    "DAPHNES FRIENDHALETH",
+    "DAPHNES FRIENDROHAN SOLDIER 2",
+    "DAPHNES FRIENDSHARKU",
+    "DAPHNES FRIENDTHODENSARUMAN",
+    "DIRECTION",
+    "DUDE",
+    "EXECUTIVE",
+    "EXECUTIVESWHITE WIZARD",
+    "FLIGHT ATTENDANT",
+    "FOUR SEASONS OPERATOR",
+    "GRITTY",
+    "HEATHROW SECURITY",
+    "HOMELESS GUY",
+    "IRISH GUYGRISHNKH",
+    "IRISH GUYORC",
+    "IRISH GUYORC OVERSEER",
+    "IRISH GUYSNAGA",
+    "IRISH GUYTHE TREE",
+    "IRISH GUYUGLK",
+    "IRISH GUYVILLAGER",
+    "JACKIE Q",
+    "JACKIE QALDOUS",
+    "JONATHAN SNOW",
+    "KATHERINE THE STRIPPER",
+    "KRISSY",
+    "LENA",
+    "LIMO DRIVERURUK-HAI",
+    "MAGICIAN",
+    "MAHUR",
+    "MILLENIUM",
+    "MR BINKS",
+    "MR BINKSMRS BINKS",
+    "MRS BINKS",
+    "NAPLES",
+    "NPR ANNOUNCER",
+    "PAPARAZZI",
+    "PARKING ATTENDANT",
+    "PHIL",
+    "PILOT",
+    "PINNACLE LAWYER",
+    "PROSTITUTEARAGORN",
+    "PROSTITUTEARWEN",
+    "PROSTITUTEBOROMIR",
+    "PROSTITUTEDENETHOR",
+    "PROSTITUTEDIRECTION",
+    "PROSTITUTEELROND",
+    "PROSTITUTEFARAMIR",
+    "PROSTITUTEFREDA",
+    "PROSTITUTEFRODO",
+    "PROSTITUTEGALADRIEL",
+    "PROSTITUTEGAMLING",
+    "PROSTITUTEGANDALF",
+    "PROSTITUTEGIMLI",
+    "PROSTITUTEGOLLUM",
+    "PROSTITUTEGUARD 1",
+    "PROSTITUTEHMA",
+    "PROSTITUTELEGOLAS",
+    "PROSTITUTEMADRIL",
+    "PROSTITUTEMERRY",
+    "PROSTITUTEMORWEN",
+    "PROSTITUTEOMER",
+    "PROSTITUTEOTHAIN",
+    "PROSTITUTEOWYN",
+    "PROSTITUTEPIPPIN",
+    "PROSTITUTERANGER",
+    "PROSTITUTEROHAN SOLDIER 1",
+    "PROSTITUTESAM",
+    "PROSTITUTESARUMAN",
+    "PROSTITUTESMAGOL",
+    "PROSTITUTETHODEN",
+    "PROSTITUTETREEBEARD",
+    "PROSTITUTEWILD MAN",
+    "PROSTITUTEWORMTONGUE",
+    "RECEPTIONIST",
+    "REPORTERS",
+    "ROCK GUY",
+    "ROCK GUYS",
+    "ROCKER GIRLFRIEND",
+    "SASSY TABLOID TV ANCHOR",
+    "SASSY TABLOID TV REPORTER",
+    "SCUMBAG",
+    "SECOND EXECUTIVE",
+    "SECOND TWEEN GIRL",
+    "SERGIO",
+    "STRIPPERS",
+    "SUZETTE",
+    "TOUR BUS DRIVER",
+    "TRAVEL AGENT",
+    "TWEEN GIRLEWYN",
+    "VALET",
+    "WAITRESS"
+    ]
+    name = list[name % len(list)]
     pame = name.replace(".","")
     pame = pame.replace("/","")
     pame = filter(lambda x: x in string.printable,pame)
+    char.name = name
     bot = ChatBot(pame)
     bot.gg()
     bot = ChatBot(pame)
     print playName+'.'+pame
     print os.getcwd()
-    bot.train(playName+'.'+pame)
+    bot.train('sourcesGetHimToTheGreekpdfsourcesLOTR2pdf2.'+pame)
     return bot
 
 def createPlay(playdata):
@@ -40,7 +146,7 @@ def createPlay(playdata):
     charnum = playdata.numChars+random.randint(0,playdata.charVars/2)
     print "Cast "+str(charnum)
     
-    for i in range(0,charnum):
+    for i in range(0,int(charnum)):
         j = random.randint(0,len(playdata.charList)-1)
         if j not in charbotsN:
             charbotsN.append(j)
@@ -51,7 +157,7 @@ def createPlay(playdata):
     characters = []
     indexi = {}
     for j in charbotsN:
-        charBots.append(makeBot(playdata.playName, playdata.charList[j].name))
+        charBots.append(makeBot(playdata.playName, j, playdata.charList[j]))
         characters.append(playdata.charList[j])
     pos = 0
     script = ""
@@ -82,13 +188,14 @@ def createScene(playdata,characters, pos, castBots,charList):
     scene.length = scene.length/len(playdata.sceneList)
     scene.length = max(scene.length,.1)
     numChars = max([numChars,3])
-    numLines = playdata.numLines*scene.length
+    numLines = 20#playdata.numLines*scene.length
     chatBots = []
     print scene.length
     print numChars
     for i in range(2,int(numChars)):
         j = random.randint(0,len(characters)-1)
         chars.append(characters[j])
+        characters[j].anger = max(characters[j].anger,5)
         chatBots.append(castBots[j])
         
     if len(chars) < 2:
@@ -99,6 +206,8 @@ def createScene(playdata,characters, pos, castBots,charList):
         chars.append(characters[j])
         chatBots.append(castBots[j])
     while numLines > 0:
+        print "scene Progress "+ str(numLines)
+        print ""
         numLines = numLines - 1
         talk = chars[0]
         for temp in chars:

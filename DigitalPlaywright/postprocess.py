@@ -18,15 +18,15 @@ def replaceTokensLine(line,characters,tokens):
         line = line.replace("0x"+str(tokens.index(token))+"x0",token)
     return line
     
-def replaceTokens(playData,script):
+def replaceTokens(script):
     charList = []
     tokenList = []
     
     
-    for i in range(0,len(playData.charList)+5):
+    for i in range(0,150):
         charList.append(gen_word(2, 4))
         
-    for i in range(0,len(playData.tokenList)+5):
+    for i in range(0,2000):
         tokenList.append(gen_word(2, 4))
     print "_________________"
     print charList
@@ -35,4 +35,15 @@ def replaceTokens(playData,script):
     print ""
     print ""    
     return replaceTokensLine(script,charList,tokenList)
+
+
+
+
+script = open('outputTestLOTRTMTG.txt','r') 
+script2=script.read()
+script3 = open('outputTestLOTRTMTG2.txt','w')
+print script2
+script3.write(replaceTokens(script2))
+
+script3.close() 
     

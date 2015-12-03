@@ -126,7 +126,8 @@ for char in scriptA.charList:
     for line in char.lines:
         print line[1].text
         line[0].text = removePunctuation(printAble(line[0].text))
-        line[1].text = tokenize(line[1].text, tokenList, nameList)
+        line[1].text = removePunctuation(printAble(line[0].text))
+        #line[1].text = tokenize(line[1].text, tokenList, nameList)
         print line[1].text
 
 for char in scriptB.charList:
@@ -136,20 +137,21 @@ for char in scriptB.charList:
     for line in char.lines:
         print line[1].text
         line[0].text = removePunctuation(printAble(line[0].text))
-        line[1].text = tokenize(line[1].text, tokenList, nameList)
+        line[1].text = removePunctuation(printAble(line[0].text))
+        #line[1].text = tokenize(line[1].text, tokenList, nameList)
         print line[1].text
 
 
 computeVariance(scriptA)   
-reToken(tokenList,scriptA)
-reToken(tokenList,scriptB)   
+#reToken(tokenList,scriptA)
+#reToken(tokenList,scriptB)   
 computeVariance(scriptB)
 
 print scriptB
 
 #merge play datas until there's only one
 
-scriptN = scriptA = mergeDB(scriptA, scriptB)
+scriptN = scriptA #= mergeDB(scriptA, scriptB)
 
 print ""
 print "-After merge"
@@ -161,7 +163,7 @@ for char in scriptN.charList:
 print scriptN
 
 #create corpusi from PlayData
-SaveCorpusi(scriptN)
+#SaveCorpusi(scriptN)
 
 #create play
 nameList = []

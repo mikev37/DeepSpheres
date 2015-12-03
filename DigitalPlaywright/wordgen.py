@@ -33,3 +33,8 @@ def word_part(type):
 for i in range(0, 10):
     print gen_word(2,4)
 '''
+   
+   
+  
+   
+   
