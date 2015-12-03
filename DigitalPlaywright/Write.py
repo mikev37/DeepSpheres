@@ -102,14 +102,14 @@ scriptB.tokenList = []
 
 masterList = GetTheStuff()
 scriptA = masterList[0]
-scriptB = masterList[1]
+scriptB = masterList[-1]
 
 #tokenize the play and compute statistics
 
 scriptA.playName = removePunctuation(printAble(scriptA.playName))
 scriptA.playName = scriptA.playName.replace(" ", "")
 scriptB.playName = removePunctuation(printAble(scriptB.playName))
-scriptB.playName = scriptA.playName.replace(" ", "")
+scriptB.playName = scriptB.playName.replace(" ", "")
 
 tokenList = []
 nameList = []
@@ -178,7 +178,7 @@ script = createPlay(scriptN)
 script = replaceTokens(scriptN,script)
 
 
-file = open('outputTest2.txt','w')
+file = open('outputTestLOTRTMTG.txt','w')
 script = ''.join([c for c in script if c in string.printable])
 file.write(script)
 file.close()

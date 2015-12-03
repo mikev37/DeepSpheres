@@ -23,10 +23,10 @@ def replaceTokens(playData,script):
     tokenList = []
     
     
-    for i in range(0,len(playData.charList)):
+    for i in range(0,len(playData.charList)+5):
         charList.append(gen_word(2, 4))
         
-    for i in range(0,len(playData.tokenList)):
+    for i in range(0,len(playData.tokenList)+5):
         tokenList.append(gen_word(2, 4))
     print "_________________"
     print charList

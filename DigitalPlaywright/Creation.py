@@ -37,7 +37,7 @@ def createPlay(playdata):
     charbotsN = []
     print playdata.numChars
     print playdata.charVars
-    charnum = playdata.numChars+random.randint(-playdata.charVars/2,playdata.charVars/2)
+    charnum = playdata.numChars+random.randint(0,playdata.charVars/2)
     print "Cast "+str(charnum)
     
     for i in range(0,charnum):

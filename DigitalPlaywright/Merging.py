@@ -211,11 +211,11 @@ def mergeDB(DBA,DBB):
     for scene in DBB.sceneList:
         DBN.sceneList.append(scene)
     print DBN.charList
-    DBN.meanLength = (DBA.meanLength+DBB.meanLength)/2
-    DBN.meanStart = (DBA.meanStart+DBB.meanStart)/2
-    DBN.numChars = (DBA.numChars+DBB.numChars)/2
-    DBN.numLines = (DBA.numLines +DBB.numLines)/2
-    DBN.numScenes = (DBA.numScenes +DBB.numScenes)/2
+    DBN.meanLength = (DBA.meanLength+DBB.meanLength)/2.0
+    DBN.meanStart = (DBA.meanStart+DBB.meanStart)/2.0
+    DBN.numChars = (DBA.numChars+DBB.numChars)/2.0
+    DBN.numLines = (DBA.numLines +DBB.numLines)/2.0
+    DBN.numScenes = (DBA.numScenes +DBB.numScenes)/2.0
     DBN.charVar = math.sqrt(pow(DBA.numChars - DBB.numChars,2))
     #postProcess(DBA)
     #postProcess(DBB)

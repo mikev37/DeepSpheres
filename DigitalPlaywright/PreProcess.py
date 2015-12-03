@@ -65,7 +65,7 @@ def tokenize(sentence,tokenList,nameList):
         poun = removePunctuation(noun)
         if poun.upper() in nameList:
             sentence = sentence.replace(noun, "0m"+str(nameList.index(poun.upper()))+"m0"+keepPunctuation(noun))
-        elif percentageUpper(noun) > .5  or "\'" in noun :
+        elif "\'" in noun :
             continue
         else :
             if noun not in tokenList:
