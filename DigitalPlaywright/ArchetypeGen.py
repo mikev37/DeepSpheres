@@ -6,32 +6,7 @@ import re
 import DataStructures
 saveName = 'data.json'
 
-class PlayData:
-    def __init__(self, name):
-        self.playName = name
-        self.charList = []
-        self.tokenList = []
-        self.sceneList = []
-        self.numChars = 0
-        self.numScenes = 0
-        self.numLines = 0
-        self.meanStart = 0
-        self.meanLength = 0
-        
-class SceneObject:
-    
-    def __init__(self):
-        self.start = 0
-        self.length = 0
-        self.vLength = 0
-        self.vStart = 0
-        self.numChars = 0
-        self.directions = []
-        self.name = ""
-    #
-    def getContribution(self,pos):
-        return abs(pos - self.start+self.length/2)
-    
+
 
 class LineObj():
     script = ""
@@ -174,7 +149,7 @@ def AddToStructures(line):
             UpdatePreviousScript()
         scriptWatcher = line.script
         resetCounters()
-        PlayList.append(PlayData(line.script))
+        PlayList.append(DataStructures.PlayData(line.script))
         firstPlay = False
         firstScene = True
     lineCounter += 1
@@ -183,7 +158,7 @@ def AddToStructures(line):
         if not firstScene:
             UpdatePreviousScene()
         sceneCounter = line.scene
-        temp = SceneObject()
+        temp = DataStructures.SceneObject()
         temp.start = lineCounter
         temp.name = str(sceneCounter)
         getPlayinList(scriptWatcher).sceneList.append(temp)

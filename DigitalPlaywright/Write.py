@@ -97,12 +97,32 @@ scriptB.tokenList = []
 '''
 #Pull charcters and scenes from all the Line
 scriptA = GetTheStuff()[0]
+<<<<<<< HEAD
 scriptB = GetTheStuff()[1]
 #tokenize the play and compute statistics
 
 
+=======
+scriptB = GetTheStuff()[3]
+scriptC = GetTheStuff()[6]
+#tokenize the play and compute statistics
+'''
+print len(scriptA.charList)
+file = open("scripaA.txt",'w')
+file.write(scriptA.playName)
+for char in scriptA.charList:
+    line = str(char.name)+str(len(char.lines))
+    for line in char.lines:
+        
+        line = filter(lambda x: x in string.printable,str(char.name)+ line[1].text)
+        file.write(line+"\n")
+file.close()
+print len(scriptC.charList)
+'''
+>>>>>>> f84ff7aee27c9ddd1b55ad54ec7ae8cba956b065
 tokenList = []
 nameList = []
+'''
 for char in scriptA.charList:
     nameList.append(char.name)
 for char in scriptA.charList:
@@ -111,7 +131,7 @@ for char in scriptA.charList:
         line[1].text = tokenize(line[1].text, tokenList, nameList)
         print line[1].text
         
-
+'''
 print scriptA
 
 tokenList = []
@@ -122,8 +142,13 @@ for char in scriptB.charList:
     for line in char.lines:
         print line[1].text
         line[1].text = tokenize(line[1].text, tokenList, nameList)
+<<<<<<< HEAD
         print line[1].text\
      
+=======
+        print line[1].text
+        
+>>>>>>> f84ff7aee27c9ddd1b55ad54ec7ae8cba956b065
 
 computeVariance(scriptA)   
 reToken(tokenList,scriptA)
@@ -146,7 +171,7 @@ for char in scriptN.charList:
 print scriptN
 
 #create corpusi from PlayData
-#SaveCorpusi(scriptN)
+SaveCorpusi(scriptN)
 
 #create play
 nameList = []

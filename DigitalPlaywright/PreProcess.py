@@ -31,6 +31,7 @@ SceneObj
     Tokens contained
     
 '''
+import string
 import DataStructures
 from nltk.tag import pos_tag
 from nltk.corpus import cmudict
@@ -51,14 +52,21 @@ def tokenize(sentence,tokenList,nameList):
     print propernouns
     
     for noun in propernouns:
-        if noun.upper() in nameList:
+        poun = noun.translate(string.maketrans("",""), string.punctuation)
+        if poun.upper() in nameList:
             sentence = sentence.replace(noun, "0m"+str(nameList.index(noun.upper()))+"m0")
+        elif percentageUpper(noun) or "\'" in noun > .5 :
+            continue
         else :
             if noun not in tokenList:
                 tokenList.append(noun)
             sentence = sentence.replace(noun, "0x"+str(tokenList.index(noun))+"x0")
 
     return sentence
+
+def percentageUpper(text):
+    s = ''.join([c for c in text if c.isupper()])
+    return 1.0*len(s)/len(text)
 
 def reToken(tokenList,scriptA):
     for toke in tokenList:
