@@ -1,6 +1,6 @@
 from .utils.module_loading import import_module
 from .conversation import Statement, Response
-
+import random
 
 class ChatBot(object):
 
@@ -136,7 +136,8 @@ class ChatBot(object):
 
         # Process the response output with the IO adapter
         response = self.io.process_response(response)
-
+        if(random.randint(0,2)>0 and len(response)<random.randint(0,200)):
+            response = self.get_response(response)
         return response
 
     def get_input(self):

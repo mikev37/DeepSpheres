@@ -1,11 +1,11 @@
 import math
 from wordgen import gen_word
 def postProcess(line):
-    line.replace("0t","0x")
-    line.replace("t0","x0")
-    line.replace("0z","0m")
-    line.replace("z0","m0")
-    
+    line = line.replace("0t","0x")
+    line = line.replace("t0","x0")
+    line = line.replace("0z","0m")
+    line = line.replace("z0","m0")
+    return line
 
 '''
 given list of characternames and list of tokennames, replace all the temp data with new data
@@ -13,12 +13,12 @@ given list of characternames and list of tokennames, replace all the temp data w
 def replaceTokensLine(line,characters,tokens):
     
     for char in characters:
-        line.replace("0m"+characters.index(char)+"0m",char)
-    for token in characters:
-        line.replace("0x"+tokens.index(token)+"0x",token)
+        line = line.replace("0m"+str(characters.index(char))+"m0",char)
+    for token in tokens:
+        line = line.replace("0x"+str(tokens.index(token))+"x0",token)
+    return line
     
-    
-def replaceTokens(playData):
+def replaceTokens(playData,script):
     charList = []
     tokenList = []
     
@@ -27,6 +27,12 @@ def replaceTokens(playData):
         charList.append(gen_word(2, 4))
         
     for i in range(0,len(playData.tokenList)):
-        charList.append(gen_word(2, 4))
-        
+        tokenList.append(gen_word(2, 4))
+    print "_________________"
+    print charList
+    print tokenList
+    print ""
+    print ""
+    print ""    
+    return replaceTokensLine(script,charList,tokenList)
     

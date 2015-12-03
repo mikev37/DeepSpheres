@@ -17,29 +17,42 @@ import DataStructures
 import random
 import math
 from chatterbot import ChatBot
+import os
+def makeBot(playName,name):
+    bot = ChatBot(name)
+    bot.gg()
+    bot = ChatBot(name)
 
-
+    bot.train(playName+'.'+name)
+    return bot
 
 def createPlay(playdata):
     print "TODO"
     #get a cast of characters
-    dirBot = ChatBot("Direction")
     charbotsN = []
-    charnum = playdata.meanChars+random.randint(playdata.charVariance)
+    print playdata.numChars
+    print playdata.charVars
+    charnum = playdata.numChars+random.randint(-playdata.charVars/2,playdata.charVars/2)
+    print "Cast "+str(charnum)
+    
     for i in range(0,charnum):
-        j = random.randint(len(playdata.charList))
+        j = random.randint(0,len(playdata.charList)-1)
         if j not in charbotsN:
             charbotsN.append(j)
         else:
             i = i -1
+    print charbotsN
     charBots = [] 
+    characters = []
+    indexi = {}
     for j in charbotsN:
-        charBots.append(playdata.charList[j])
+        charBots.append(makeBot(playdata.playName, playdata.charList[j].name))
+        characters.append(playdata.charList[j])
     pos = 0
     script = ""
     #make scenes until done
     while (pos < 1):
-        scene = createScene(script, charBots, pos, dirBot)
+        scene = createScene(playdata, characters, pos, charBots,playdata.charList)
         script = script + scene['text'] + "\n"
         pos = pos + scene['scene'].length
         
@@ -47,7 +60,7 @@ def createPlay(playdata):
     
     return script
         
-def createScene(playdata,charBots, pos, dirBot):
+def createScene(playdata,characters, pos, castBots,charList):
     text = ""
     line = ""
     numChars = 0
@@ -58,12 +71,18 @@ def createScene(playdata,charBots, pos, dirBot):
     scene = DataStructures.SceneObject()
     for part in playdata.sceneList:
         scene.length = scene.length + (part.length + random.random()*part.vLength)*part.getContribution(pos)
-        numChars = numChars + math.ceil(len(part.characters)*part.getContribution(pos))
-        dirAnger = math.ceil(len(part.characters)*part.getContribution(pos))
+        numChars = math.floor(numChars + part.numChars*part.getContribution(pos))
+        #dirAnger = math.ceil(len(part.characters)*part.getContribution(pos))
     scene.length = scene.length/len(playdata.sceneList)
-    numLines = playdata.meanLines*scene.length
-    for i in range(0,numChars):
-        chars.append(charBots[random.randint(len(charBots))])
+    numChars = numChars/len(playdata.sceneList)
+    numLines = playdata.numLines*scene.length
+    chatBots = []
+    print scene.length
+    print numChars
+    for i in range(0,int(numChars)):
+        j = random.randint(0,len(characters)-1)
+        chars.append(characters[j])
+        chatBots.append(castBots[j])
     while numLines > 0:
         numLines = numLines - 1
         talk = chars[0]
@@ -71,16 +90,23 @@ def createScene(playdata,charBots, pos, dirBot):
             if temp.frustration > talk.frustration :
                 talk = temp
             temp.frustration = temp.frustration + temp.anger
-        if talk.frustration > dirFrustration:
-            text = text + "\t\t 0m"+str(talk.index)+"m0\n"
-            line = talk.getResponce(line)
+        print talk.name
+        print chars.index(talk)
+        print chatBots
+        print chars
+        bot = chatBots[chars.index(talk)]
+        
+        if 'DIRECTION' in talk.name:
+            line = bot.get_response(line)
+            text = text +line+"\n"
+            talk.frustration = 0
+        else:
+            text = text + "\t\t 0m"+str(charList.index(talk))+"m0\n"
+            line = bot.get_response(line)
             text = text + "\t"+line+"\n"
             talk.frustration = 0
-            dirFrustration = dirFrustration+dirAnger
-        else : 
-            line = dirBot.get_response(line)
-            text = text + line  + "\n"
-            dirFrustration = 0
+
+        
         
     return {'text':text, 'scene': scene }
     

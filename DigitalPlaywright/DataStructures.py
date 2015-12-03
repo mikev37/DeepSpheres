@@ -1,6 +1,6 @@
 from wordgen import gen_word
 
-
+import math
 
 
 class PlayData:
@@ -14,6 +14,7 @@ class PlayData:
         self.numLines = 0
         self.meanStart = 0
         self.meanLength = 0
+        self.charVars = 0
         
 class SceneObject:
     
@@ -27,7 +28,7 @@ class SceneObject:
         self.name = ""
     #
     def getContribution(self,pos):
-        return abs(pos - self.start+self.length/2)
+        return 1.1-math.sqrt(math.pow(pos - (self.start),2))
     
 
 class LineObj():
@@ -77,31 +78,3 @@ class TokenObject:
         return words
 
 
-class SceneObject:
-    
-    def __init__(self):
-        self.start = 0
-        self.length = 0
-        self.vLength = 0
-        self.vStart = 0
-        self.characters = []
-        self.directions = []
-        self.name = ""
-    #
-    def getContribution(self,pos):
-        return abs(pos - self.start+self.length/2)
-    
-    
-
-class LineObj():
-    script = ""
-    scene = 0
-    line = 0
-    character = ""
-    text = ""
-    def __init__ (self, name, sc, ln, ch, txt):
-        self.script = name.strip()
-        self.scene = sc
-        self.line = ln
-        self.character = ch.strip()
-        self.text = txt
