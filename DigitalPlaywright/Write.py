@@ -97,10 +97,11 @@ scriptB.tokenList = []
 
 
 #Pull charcters and scenes from all the Line
-scriptA = GetTheStuff()[1]
-scriptB = GetTheStuff()[1]
-scriptC = GetTheStuff()[2]
+scriptA = GetTheStuff()[0]
+scriptB = GetTheStuff()[3]
+scriptC = GetTheStuff()[6]
 #tokenize the play and compute statistics
+'''
 print len(scriptA.charList)
 file = open("scripaA.txt",'w')
 file.write(scriptA.playName)
@@ -155,7 +156,7 @@ for char in scriptN.charList:
         print "\t"+line[1].text
 print scriptN
 #create corpusi from PlayData
-#SaveCorpusi(scriptN)
+SaveCorpusi(scriptN)
 
 #create play
 nameList = []
@@ -170,4 +171,3 @@ for token in scriptN.tokenList:
 script = createPlay(scriptN)
 
 print replaceTokens(scriptN,script)
-'''
